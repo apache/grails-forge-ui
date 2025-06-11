@@ -6,14 +6,14 @@
             "order": 0
         },
         {
-            "key": "SNAPSHOT",
-            "baseUrl": "https://snapshot.grails.org",
-            "order": 1                    
-        },
-        {
             "key": "NEXT",
             "baseUrl": "https://next.grails.org",
             "order": 2
+        },
+        {
+            "key": "SNAPSHOT",
+            "baseUrl": "https://snapshot.grails.org",
+            "order": 1                    
         },
         {
             "key": "PREV",
