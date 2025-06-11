@@ -8,12 +8,12 @@
         {
             "key": "NEXT",
             "baseUrl": "https://next.grails.org",
-            "order": 2
+            "order": 1
         },
         {
             "key": "SNAPSHOT",
             "baseUrl": "https://snapshot.grails.org",
-            "order": 1                    
+            "order": 2                    
         },
         {
             "key": "PREV",
