@@ -3,12 +3,12 @@
         {
             "key": "RELEASE",
             "baseUrl": "https://latest.grails.org",
-            "order": 0
+            "order": 1
         },
         {
             "key": "NEXT",
             "baseUrl": "https://next.grails.org",
-            "order": 1
+            "order": 0
         },
         {
             "key": "SNAPSHOT",
