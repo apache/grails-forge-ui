@@ -1,10 +1,10 @@
 // TooltipButton.js
 import React from 'react'
-import { Button } from 'react-materialize'
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
+import Button from '@material-ui/core/Button'
+import { createTheme, ThemeProvider } from '@material-ui/core/styles'
 import Tooltip from '@material-ui/core/Tooltip'
 
-const theme = createMuiTheme({
+const theme = createTheme({
   overrides: {
     MuiTooltip: {
       tooltip: {
@@ -14,9 +14,9 @@ const theme = createMuiTheme({
   },
 })
 
-const TooltipButton = ({ tooltip, children, ...props }) => {
+const TooltipButton = ({ tooltip, children, disabled, className, style, onClick, tabIndex, ...props }) => {
   return (
-    <MuiThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
       <Tooltip
         enterDelay={600}
         enterNextDelay={350}
@@ -26,16 +26,25 @@ const TooltipButton = ({ tooltip, children, ...props }) => {
         placement="top"
       >
         <span>
-          <Button {...props}>{children}</Button>
+          <Button
+            variant="contained"
+            disabled={disabled}
+            className={className}
+            style={style}
+            onClick={onClick}
+            tabIndex={tabIndex}
+          >
+            {children}
+          </Button>
         </span>
       </Tooltip>
-    </MuiThemeProvider>
+    </ThemeProvider>
   )
 }
 
 export const TooltipWrapper = ({ tooltip, children }) => {
   return (
-    <MuiThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
       <Tooltip
         enterDelay={600}
         enterNextDelay={350}
@@ -46,7 +55,7 @@ export const TooltipWrapper = ({ tooltip, children }) => {
       >
         {children}
       </Tooltip>
-    </MuiThemeProvider>
+    </ThemeProvider>
   )
 }
 

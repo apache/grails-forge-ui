@@ -6,11 +6,13 @@
   z-index: 9999;
 }
 
-.modal-overlay {
-  z-index: 2004 !important;
+/* MUI Dialog backdrop */
+.MuiDialog-root .MuiBackdrop-root {
+  z-index: auto;
 }
 
-.modal {
+/* MUI Dialog — ensure dialogs are above most content */
+.MuiDialog-root {
   z-index: 9998 !important;
 }
 

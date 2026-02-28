@@ -6,13 +6,17 @@ import React, {
   useMemo,
 } from 'react'
 
-import { Button } from 'react-materialize'
-
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+} from '@material-ui/core'
+import Icon from '@material-ui/core/Icon'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { Grid } from '@material-ui/core'
 
-import Icon from 'react-materialize/lib/Icon'
-import Modal from 'react-materialize/lib/Modal'
 import { darcula } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import { prism } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 
@@ -36,15 +40,10 @@ const Diff = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
     },
   }))
 
-  const options = useMemo(() => {
-    function onCloseStart(event) {
+  const handleClose = useMemo(() => {
+    return () => {
       setDiff('')
-      onClose(event)
-    }
-    return {
-      onCloseStart: onCloseStart,
-      startingTop: '5%',
-      endingTop: '5%',
+      if (onClose) onClose()
     }
   }, [onClose, setDiff])
 
@@ -53,51 +52,51 @@ const Diff = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
       <TooltipButton
         tooltip={messages.tooltips.diff}
         disabled={disabled}
-        waves="light"
         className={theme}
         style={{ marginRight: '5px', width: '100%' }}
         onClick={onLoad}
         tabIndex={1}
       >
-        <Icon className="action-button-icon" left>
+        <Icon className="action-button-icon" style={{ marginRight: 8 }}>
           compare_arrows
         </Icon>
         Diff
       </TooltipButton>
 
-      <Modal
-        header={
-          'Showing Diff for a Grails application using ' +
-            capitalize(gorm) + ', ' + capitalize(servlet)
-        }
-        className={'diff ' + theme}
-        fixedFooter
+      <Dialog
         open={!!diff}
-        options={options}
-        actions={
-          <Button waves="light" modal="close" flat>
+        onClose={handleClose}
+        maxWidth="lg"
+        fullWidth
+        className={`diff ${theme}`}
+        PaperProps={{ className: `diff ${theme}` }}
+      >
+        <DialogTitle>
+          {'Showing Diff for a Grails application using ' +
+            capitalize(gorm) + ', ' + capitalize(servlet)}
+        </DialogTitle>
+        <DialogContent>
+          <Grid container className="grid-container">
+            <Grid item xs={12} className={'grid-column'}>
+              {diff && (
+                <SyntaxHighlighter
+                  className="codePreview"
+                  language="diff"
+                  style={theme === 'light' ? prism : darcula}
+                  showLineNumbers={true}
+                >
+                  {diff}
+                </SyntaxHighlighter>
+              )}
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>
             Close
           </Button>
-        }
-      >
-        <Grid container className="grid-container">
-          <Grid item xs={12} className={'grid-column'}>
-            {diff && (
-              <SyntaxHighlighter
-                className="codePreview"
-                lineNumberContainerProps={{
-                  className: 'lineNumbers',
-                }}
-                language="diff"
-                style={theme === 'light' ? prism : darcula}
-                showLineNumbers={true}
-              >
-                {diff}
-              </SyntaxHighlighter>
-            )}
-          </Grid>
-        </Grid>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     </React.Fragment>
   )
 }

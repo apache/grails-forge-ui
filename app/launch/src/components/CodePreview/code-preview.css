@@ -21,11 +21,3 @@
 .code-preview.footer-wrapper div.hidden {
   opacity: 0;
 }
-
-.lineNumbers {
-  margin-right: 10px;
-  padding-right: 5px !important;
-  border-right: 1px dashed;
-  height: 100%;
-  min-width: 24px;
-}

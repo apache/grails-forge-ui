@@ -1,7 +1,7 @@
 // Header.js
 import React from 'react'
 
-import {ReactComponent as GrailsLaunchLogo} from '../../images/grails-forge.svg'
+import GrailsLaunchLogo from '../../images/grails-forge.svg?react'
 
 const Header = () => {
 

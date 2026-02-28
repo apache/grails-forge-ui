@@ -1,12 +1,15 @@
 // FeatureSelector.js
 import React, { useMemo, useRef, useState } from 'react'
 
-import { Button } from 'react-materialize'
-import Col from 'react-materialize/lib/Col'
-import Icon from 'react-materialize/lib/Icon'
-import Modal from 'react-materialize/lib/Modal'
-import Preloader from 'react-materialize/lib/Preloader'
-import Row from 'react-materialize/lib/Row'
+import {
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Grid,
+} from '@material-ui/core'
+import Icon from '@material-ui/core/Icon'
 import messages from '../../constants/messages.json'
 import { ModalKeyboardHandler } from '../../helpers/ModalKeyboardHandler'
 import {
@@ -40,21 +43,22 @@ const featureCategoryReducer = (map, result) => {
 
 const FeatureAvailableGroup = ({ category, entities, toggleFeatures }) => {
   return (
-    <Row className={`modal-group category ${category}`}>
-      <Col s={12}>
+    <Grid container spacing={2} className={`modal-group category ${category}`}>
+      <Grid item xs={12}>
         <h6>{category}</h6>
-      </Col>
+      </Grid>
       {entities.map((feature, i) => (
-        <Col s={12} key={i}>
+        <Grid item xs={12} key={i}>
           <FeatureAvailable feature={feature} toggleFeatures={toggleFeatures} />
-        </Col>
+        </Grid>
       ))}
-    </Row>
+    </Grid>
   )
 }
 
 export const FeatureSelectorModal = ({ theme = 'light' }) => {
   const inputRef = useRef(null)
+  const [open, setOpen] = useState(false)
 
   const [selectedFeatures, , features, loading] = useSelectedFeatures()
   const { onAddFeature, onRemoveFeature, onRemoveAllFeatures } =
@@ -104,89 +108,87 @@ export const FeatureSelectorModal = ({ theme = 'light' }) => {
     onRemoveAllFeatures()
   }
 
-  const onModalClose = (event) => {
-    const { firstElementChild } = event
-    firstElementChild.scrollTop = 0
+  const handleOpen = () => {
+    setOpen(true)
+    setTimeout(() => {
+      if (inputRef.current && typeof inputRef.current.focus === 'function') {
+        inputRef.current.focus()
+      }
+    }, 300)
   }
 
-  const onModalOpen = () => {
-    if (inputRef.current && typeof inputRef.current.focus === 'function') {
-      setTimeout(() => {
-        inputRef.current.focus()
-      }, 300)
-    }
+  const handleClose = () => {
+    setOpen(false)
   }
 
   return (
     <div id="feature-selector-wrapper" style={{ marginBottom: 0 }}>
-      <Modal
-        className={`mn-feature-modal modal-lg ${theme}`}
-        fixedFooter
-        actions={[
-          <Button waves="light" onClick={removeAll} flat>
-            Remove All ({selectedFeatureKeys.length})
-          </Button>,
-          <Button waves="light" modal="close" flat>
-            Done
-          </Button>,
-        ]}
-        options={{
-          onOpenStart: onModalOpen,
-          onOpenEnd: keyboardEventHandler.onOpenEnd,
-          onCloseEnd: keyboardEventHandler.onCloseEnd,
-          onCloseStart: onModalClose,
-          startingTop: '5%',
-          endingTop: '5%',
-        }}
-        trigger={
-          <TooltipButton
-            tooltip={messages.tooltips.features}
-            waves="light"
-            className={theme}
-            style={{ marginRight: '5px', width: '100%' }}
-            tabIndex={1}
-          >
-            <Icon className="action-button-icon" left>
-              add
-            </Icon>
-            Features
-          </TooltipButton>
-        }
+      <TooltipButton
+        tooltip={messages.tooltips.features}
+        className={theme}
+        style={{ marginRight: '5px', width: '100%' }}
+        tabIndex={1}
+        onClick={handleOpen}
       >
-        <h4>
-          <div className="modal-header">
-            <TextInput
-              ref={inputRef}
-              id="features-selector-search-input"
-              className="mn-input"
-              label="Search Features"
-              placeholder="ex: cassandra"
-              name="search"
-              s={12}
-              autoComplete="off"
-              value={search}
-              onChangeText={setSearch}
-            />
-          </div>
-        </h4>
-        {loading ? (
-          <Preloader />
-        ) : (
-          <Col s={12}>
-            {searchResults.length === 0 && <p>No matching features</p>}
-            {Object.keys(groupedResults).map((key) => {
-              return (
-                <FeatureAvailableGroup
-                  key={key}
-                  category={key}
-                  entities={groupedResults[key]}
-                  toggleFeatures={toggleFeatures}
-                />
-              )
-            })}
-          </Col>
-        )}
-      </Modal>
+        <Icon className="action-button-icon" style={{ marginRight: 8 }}>
+          add
+        </Icon>
+        Features
+      </TooltipButton>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="lg"
+        fullWidth
+        className={`mn-feature-modal ${theme}`}
+        PaperProps={{
+          className: `mn-feature-modal ${theme}`,
+          style: { maxHeight: '90vh', height: '90vh' },
+        }}
+      >
+        <DialogContent>
+          <h4>
+            <div className="modal-header">
+              <TextInput
+                ref={inputRef}
+                id="features-selector-search-input"
+                className="mn-input"
+                label="Search Features"
+                placeholder="ex: cassandra"
+                name="search"
+                autoComplete="off"
+                value={search}
+                onChangeText={setSearch}
+              />
+            </div>
+          </h4>
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <Grid item xs={12}>
+              {searchResults.length === 0 && <p>No matching features</p>}
+              {Object.keys(groupedResults).map((key) => {
+                return (
+                  <FeatureAvailableGroup
+                    key={key}
+                    category={key}
+                    entities={groupedResults[key]}
+                    toggleFeatures={toggleFeatures}
+                  />
+                )
+              })}
+            </Grid>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={removeAll}>
+            Remove All ({selectedFeatureKeys.length})
+          </Button>
+          <Button onClick={handleClose}>
+            Done
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }

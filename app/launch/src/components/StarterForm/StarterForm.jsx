@@ -1,7 +1,6 @@
 // StarterForm.js
 import React from "react";
-import Col from 'react-materialize/lib/Col'
-import Row from 'react-materialize/lib/Row'
+import { Grid } from '@material-ui/core'
 
 import StarterFormApplicationType from './StarterFormApplicationType'
 import StarterFormGorm from "./StarterFormGorm";
@@ -14,32 +13,32 @@ import StarterFormServlet from './StarterFormServlet'
 
 const StarterForm = ({ onError }) => {
   return (
-    <Row className="mn-starter-form-main">
-      <Col s={8} m={6} l={3}>
+    <Grid container spacing={1} className="mn-starter-form-main" alignItems="flex-end">
+      <Grid item xs={12} sm={6} md={3}>
         <StarterFormApplicationType />
-      </Col>
-      <Col s={4} m={6} l={3}>
+      </Grid>
+      <Grid item xs={12} sm={6} md={3}>
         <StarterFormJavaVersion />
-      </Col>
-      <Col s={8} m={6} l={3}>
+      </Grid>
+      <Grid item xs={12} sm={6} md={3}>
         <StarterFormName />
-      </Col>
-      <Col s={4} m={6} l={3}>
+      </Grid>
+      <Grid item xs={12} sm={6} md={3}>
         <StarterFormPackage />
-      </Col>
-      <Col m={3} s={12} className="mn-radio">
+      </Grid>
+      <Grid item sm={3} xs={12} className="mn-radio">
         <StarterFormMicronautVersion />
-      </Col>
-      <Col m={3} s={12} className="mn-radio">
+      </Grid>
+      <Grid item sm={3} xs={12} className="mn-radio">
         <StarterFormGorm />
-      </Col>
-      <Col m={3} s={12} className="mn-radio">
+      </Grid>
+      <Grid item sm={3} xs={12} className="mn-radio">
         <StarterFormServlet />
-      </Col>
-      <Col m={3} s={12} className="mn-radio">
+      </Grid>
+      <Grid item sm={3} xs={12} className="mn-radio">
         <StarterFormReloadingFramework />
-      </Col>
-    </Row>
+      </Grid>
+    </Grid>
   )
 }
 

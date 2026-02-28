@@ -7,13 +7,18 @@ import React, {
   useImperativeHandle,
 } from 'react'
 
-import { Button } from 'react-materialize'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { Grid } from '@material-ui/core'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+} from '@material-ui/core'
+import Icon from '@material-ui/core/Icon'
 import TreeItem from '@material-ui/lab/TreeItem'
 import TreeView from '@material-ui/lab/TreeView'
-import Icon from 'react-materialize/lib/Icon'
-import Modal from 'react-materialize/lib/Modal'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 
 import { darcula } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import { prism } from 'react-syntax-highlighter/dist/cjs/styles/prism'
@@ -180,32 +185,63 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
       <TooltipButton
         tooltip={messages.tooltips.preview}
         disabled={disabled}
-        waves="light"
         className={theme}
         style={{ marginRight: '5px', width: '100%' }}
         onClick={onLoad}
         tabIndex={1}
       >
-        <Icon className="action-button-icon" left>
+        <Icon className="action-button-icon" style={{ marginRight: 8 }}>
           search
         </Icon>
         Preview
       </TooltipButton>
-      <Modal
+      <Dialog
         open={open}
-        header={
-          'Previewing a Grails application using ' +
+        onClose={onModalClose}
+        maxWidth="lg"
+        fullWidth
+        className={`preview ${theme}`}
+        PaperProps={{ className: `preview ${theme}` }}
+      >
+        <DialogTitle>
+          {'Previewing a Grails application using ' +
           ' application using ' +
-          capitalize(servlet) + ', ' + capitalize(gorm)
-        }
-        className={'preview ' + theme}
-        fixedFooter
-        options={{
-          onCloseStart: onModalClose,
-          startingTop: '5%',
-          endingTop: '5%',
-        }}
-        actions={
+          capitalize(servlet) + ', ' + capitalize(gorm)}
+        </DialogTitle>
+        <DialogContent>
+          <Grid container className="grid-container">
+            <Grid
+              item
+              xs={3}
+              className={'grid-column'}
+              style={{ borderRight: '1px solid' }}
+            >
+              <TreeView
+                key={defaultSelected}
+                defaultCollapseIcon={<Icon>folder_open</Icon>}
+                defaultExpandIcon={<Icon>folder</Icon>}
+                defaultEndIcon={<Icon>description</Icon>}
+                defaultExpanded={defaultExpanded}
+                defaultSelected={defaultSelected}
+              >
+                {renderTree(preview)}
+              </TreeView>
+            </Grid>
+            <Grid item xs={9} className={'grid-column'}>
+              {currentFile.contents && (
+                <SyntaxHighlighter
+                  className="codePreview"
+                  language={currentFile.language}
+                  style={theme === 'light' ? prism : darcula}
+                  showLineNumbers={true}
+                >
+                  {currentFile.contents}
+                </SyntaxHighlighter>
+              )}
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
           <div className="code-preview footer-wrapper">
             <div className={currentFile.contents ? '' : 'hidden'}>
               <TooltipWrapper tooltip="Copy a link back to current file">
@@ -222,47 +258,12 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
                 </div>
               </TooltipWrapper>
             </div>
-            <Button waves="light" modal="close" flat>
+            <Button onClick={onModalClose}>
               Close
             </Button>
           </div>
-        }
-      >
-        <Grid container className="grid-container">
-          <Grid
-            item
-            xs={3}
-            className={'grid-column'}
-            style={{ borderRight: '1px solid' }}
-          >
-            <TreeView
-              key={defaultSelected}
-              defaultCollapseIcon={<Icon>folder_open</Icon>}
-              defaultExpandIcon={<Icon>folder</Icon>}
-              defaultEndIcon={<Icon>description</Icon>}
-              defaultExpanded={defaultExpanded}
-              defaultSelected={defaultSelected}
-            >
-              {renderTree(preview)}
-            </TreeView>
-          </Grid>
-          <Grid item xs={9} className={'grid-column'}>
-            {currentFile.contents && (
-              <SyntaxHighlighter
-                className="codePreview"
-                lineNumberContainerProps={{
-                  className: 'lineNumbers',
-                }}
-                language={currentFile.language}
-                style={theme === 'light' ? prism : darcula}
-                showLineNumbers={true}
-              >
-                {currentFile.contents}
-              </SyntaxHighlighter>
-            )}
-          </Grid>
-        </Grid>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     </React.Fragment>
   )
 }

@@ -1,4 +1,4 @@
-.modal.modal-lg.next-steps {
+.MuiDialog-root.next-steps .MuiDialog-paper {
   max-height: 90%;
 }
 
