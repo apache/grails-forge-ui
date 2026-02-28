@@ -200,6 +200,86 @@ Array [
 ]
 `;
 
+exports[`Initial Form Data with "reloading" 1`] = `
+Array [
+  <div
+    className="type"
+  >
+    WEB
+  </div>,
+  <div
+    className="reloading"
+  >
+    JREBEL
+  </div>,
+  <div
+    className="servlet"
+  >
+    
+  </div>,
+  <div
+    className="gorm"
+  >
+    
+  </div>,
+  <div
+    className="javaVersion"
+  >
+    
+  </div>,
+  <div
+    className="name"
+  >
+    demo
+  </div>,
+  <div
+    className="package"
+  >
+    com.example
+  </div>,
+]
+`;
+
+exports[`Initial Form Data with "reloading" 2`] = `
+Array [
+  <div
+    className="type"
+  >
+    WEB
+  </div>,
+  <div
+    className="reloading"
+  >
+    DEVTOOLS
+  </div>,
+  <div
+    className="servlet"
+  >
+    
+  </div>,
+  <div
+    className="gorm"
+  >
+    
+  </div>,
+  <div
+    className="javaVersion"
+  >
+    
+  </div>,
+  <div
+    className="name"
+  >
+    demo
+  </div>,
+  <div
+    className="package"
+  >
+    com.example
+  </div>,
+]
+`;
+
 exports[`Initial Form Data with "servlet" 1`] = `
 Array [
   <div
@@ -256,86 +336,6 @@ Array [
     className="servlet"
   >
     NONE
-  </div>,
-  <div
-    className="gorm"
-  >
-    
-  </div>,
-  <div
-    className="javaVersion"
-  >
-    
-  </div>,
-  <div
-    className="name"
-  >
-    demo
-  </div>,
-  <div
-    className="package"
-  >
-    com.example
-  </div>,
-]
-`;
-
-exports[`Initial Form Data with "reloading" 1`] = `
-Array [
-  <div
-    className="type"
-  >
-    WEB
-  </div>,
-  <div
-    className="reloading"
-  >
-    SPOCK
-  </div>,
-  <div
-    className="servlet"
-  >
-    
-  </div>,
-  <div
-    className="gorm"
-  >
-    
-  </div>,
-  <div
-    className="javaVersion"
-  >
-    
-  </div>,
-  <div
-    className="name"
-  >
-    demo
-  </div>,
-  <div
-    className="package"
-  >
-    com.example
-  </div>,
-]
-`;
-
-exports[`Initial Form Data with "reloading" 2`] = `
-Array [
-  <div
-    className="type"
-  >
-    WEB
-  </div>,
-  <div
-    className="reloading"
-  >
-    DEVTOOLS
-  </div>,
-  <div
-    className="servlet"
-  >
-    
   </div>,
   <div
     className="gorm"

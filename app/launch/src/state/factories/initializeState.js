@@ -13,7 +13,7 @@ const initialForm = (initialData) => {
     javaVersion: typeof javaVersion === 'string' ? javaVersion : '', // This is specifically "" to work with the SelectOption component
     servlet: typeof servlet === 'string' ? servlet : '',
     gorm: typeof gorm === 'string' ? gorm : '',
-    test: typeof reloading === 'string' ? reloading : '',
+    reloading: typeof reloading === 'string' ? reloading : '',
     features: StarterSDK.reconstructFeatures(features),
     [ACTIVITY_KEY]: initialData[ACTIVITY_KEY],
   }

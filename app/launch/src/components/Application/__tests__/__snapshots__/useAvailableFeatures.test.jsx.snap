@@ -10,7 +10,7 @@ exports[`Initial Form Data with "BOOM" 1`] = `
 
 exports[`Initial Form Data with "WEB" 1`] = `
 <div
-  className="test"
+  className="reloading"
 >
   [
   "a",
