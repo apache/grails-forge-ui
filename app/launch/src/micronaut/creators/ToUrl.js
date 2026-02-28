@@ -14,13 +14,13 @@ export default class ToUrl {
       javaVersion,
       servlet,
       gorm,
-      test,
+        reloading,
     } = featureCommand
 
     const query = [
       gorm && `gorm=${featureCommand.gorm}`,
       servlet && `servlet=${featureCommand.servlet}`,
-      test && `test=${featureCommand.test}`,
+    reloading && `reloading=${featureCommand.reloading}`,
       javaVersion && `javaVersion=${featureCommand.javaVersion}`,
     ].filter((i) => i)
 
@@ -37,7 +37,7 @@ export default class ToUrl {
       type,
       gorm,
       servlet,
-      test,
+      reloading,
       javaVersion,
       features,
       baseUrl,
@@ -49,7 +49,7 @@ export default class ToUrl {
     const query = [
       gorm && `gorm=${gorm}`,
       servlet && `servlet=${servlet}`,
-      test && `test=${test}`,
+      reloading && `reloading=${reloading}`,
       javaVersion && `javaVersion=${javaVersion}`,
     ].filter((i) => i)
 

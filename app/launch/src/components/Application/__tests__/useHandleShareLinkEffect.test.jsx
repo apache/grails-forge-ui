@@ -86,8 +86,8 @@ const TEST_DATA = [
     hasError: false,
   },
   {
-    initialData: { test: 'ANY', activity: 'diff' },
-    explain: 'valid by test',
+    initialData: { reloading: 'ANY', activity: 'diff' },
+    explain: 'valid by reloading',
     hasError: false,
   },
 ]

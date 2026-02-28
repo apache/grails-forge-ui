@@ -16,12 +16,12 @@
     },
     "devDependencies": {
         "prettier": "^2.3.0",
-        "react-scripts": "^4.0.3",
+        "react-scripts": "^5.0.1",
         "react-test-renderer": "^17.0.2"
     },
     "scripts": {
         "start": "react-scripts start",
-        "start:local": "export  NODE_OPTIONS=\"--openssl-legacy-provider\"; export REACT_APP_VERSION_FEED='http://localhost:3000/grails-version-feed.json'; npm run start --legacy-peer-deps",
+        "start:local": "export REACT_APP_VERSION_FEED='http://localhost:8088'; npm run start",
         "build": "react-scripts --openssl-legacy-provider build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",

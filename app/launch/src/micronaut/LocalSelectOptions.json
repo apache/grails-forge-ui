@@ -157,32 +157,26 @@
             "label": "Java"
         }
     },
-    "test": {
+    "reloading": {
         "options": [
             {
-                "name": "junit",
-                "description": "junit",
-                "value": "JUNIT",
-                "label": "Junit"
+                "name": "devtools",
+                "description": "Spring Dev Tools",
+                "value": "DEVTOOLS",
+                "label": "Spring Boot Dev Tools"
             },
             {
-                "name": "spock",
-                "description": "spock",
-                "value": "SPOCK",
-                "label": "Spock"
-            },
-            {
-                "name": "kotest",
-                "description": "kotest",
-                "value": "KOTEST",
-                "label": "Kotest"
+                "name": "jrebel",
+                "description": "Jrebel",
+                "value": "JREBEL",
+                "label": "JRebel"
             }
         ],
         "defaultOption": {
-            "name": "junit",
-            "description": "junit",
-            "value": "JUNIT",
-            "label": "Junit"
+            "name": "devtools",
+            "description": "Spring Dev Tools",
+            "value": "DEVTOOLS",
+            "label": "Spring Boot Dev Tools"
         }
     },
     "build": {

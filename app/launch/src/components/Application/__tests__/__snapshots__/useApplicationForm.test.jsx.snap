@@ -8,7 +8,7 @@ Array [
     WEB
   </div>,
   <div
-    className="test"
+    className="reloading"
   >
     
   </div>,
@@ -48,7 +48,7 @@ Array [
     WEB
   </div>,
   <div
-    className="test"
+    className="reloading"
   >
     
   </div>,
@@ -88,7 +88,7 @@ Array [
     WEB
   </div>,
   <div
-    className="test"
+    className="reloading"
   >
     
   </div>,
@@ -128,7 +128,7 @@ Array [
     WEB
   </div>,
   <div
-    className="test"
+    className="reloading"
   >
     
   </div>,
@@ -168,7 +168,7 @@ Array [
     WEB
   </div>,
   <div
-    className="test"
+    className="reloading"
   >
     
   </div>,
@@ -208,7 +208,7 @@ Array [
     WEB
   </div>,
   <div
-    className="test"
+    className="reloading"
   >
     
   </div>,
@@ -248,7 +248,7 @@ Array [
     WEB
   </div>,
   <div
-    className="test"
+    className="reloading"
   >
     
   </div>,
@@ -280,7 +280,7 @@ Array [
 ]
 `;
 
-exports[`Initial Form Data with "test" 1`] = `
+exports[`Initial Form Data with "reloading" 1`] = `
 Array [
   <div
     className="type"
@@ -288,7 +288,7 @@ Array [
     WEB
   </div>,
   <div
-    className="test"
+    className="reloading"
   >
     SPOCK
   </div>,
@@ -320,7 +320,7 @@ Array [
 ]
 `;
 
-exports[`Initial Form Data with "test" 2`] = `
+exports[`Initial Form Data with "reloading" 2`] = `
 Array [
   <div
     className="type"
@@ -328,9 +328,9 @@ Array [
     WEB
   </div>,
   <div
-    className="test"
+    className="reloading"
   >
-    JUNIT
+    DEVTOOLS
   </div>,
   <div
     className="servlet"

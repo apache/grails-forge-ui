@@ -68,8 +68,8 @@ export const NEXT_SERVLET_SHORTCUT = {
   keys: [KEY_CODE_SHIFT, KEY_CODE_S],
 }
 
-export const NEXT_TEST_SHORTCUT = {
-  label: 'Toggle to the next Test Framework',
+export const NEXT_RELOADING_SHORTCUT = {
+  label: 'Toggle to the next Development Reloading Option',
   textValue: SHIFT_TEXT + ' + T',
   keys: [KEY_CODE_SHIFT, KEY_CODE_T],
 }
@@ -84,5 +84,5 @@ export const SHORTCUT_REGISTRY = [
   NEXT_SERVLET_SHORTCUT,
   NEXT_APP_TYPE_SHORTCUT,
   NEXT_JDK_SHORTCUT,
-  NEXT_TEST_SHORTCUT,
+  NEXT_RELOADING_SHORTCUT,
 ]

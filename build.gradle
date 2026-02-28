@@ -1,20 +1,17 @@
 plugins {
     id 'base'
-    id "com.github.node-gradle.node" version "3.6.0"
+    id "com.github.node-gradle.node" version "7.1.0"
 }
 
 node {
-    nodeModulesDir = file("${rootProject.projectDir}/app/launch")
+    nodeProjectDir = file("${rootProject.projectDir}/app/launch")
+    version = rootProject.layout.projectDirectory.file('.nvmrc').asFile.text
 }
 
 task buildStarter(type: NpmTask) {
     dependsOn npmInstall
     workingDir = file("${rootProject.projectDir}/app/launch")
     args = ['run', 'build']
-}
-
-npmInstall.configure {
-    args = ['--legacy-peer-deps', '--openssl-legacy-provider']
 }
 
 task copyLaunchAssets {

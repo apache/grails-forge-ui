@@ -9,8 +9,8 @@ import StarterFormJavaVersion from './StarterFormJavaVersion'
 import StarterFormMicronautVersion from './StarterFormMicronautVersion'
 import StarterFormName from './StarterFormName'
 import StarterFormPackage from './StarterFormPackage'
+import StarterFormReloadingFramework from './StarterFormReloadingFramework'
 import StarterFormServlet from './StarterFormServlet'
-import StarterFormTestFramework from './StarterFormTestFramework'
 
 const StarterForm = ({ onError }) => {
   return (
@@ -37,7 +37,7 @@ const StarterForm = ({ onError }) => {
         <StarterFormServlet />
       </Col>
       <Col m={3} s={12} className="mn-radio">
-        <StarterFormTestFramework />
+        <StarterFormReloadingFramework />
       </Col>
     </Row>
   )

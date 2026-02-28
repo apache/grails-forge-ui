@@ -111,9 +111,9 @@ export const appTypeState = atom({
   default: defaultValueSelectorFactory('type'),
 })
 
-export const testState = atom({
-  key: 'TEST_STATE',
-  default: defaultValueSelectorFactory('test'),
+export const reloadingState = atom({
+  key: 'RELOADING_STATE',
+  default: defaultValueSelectorFactory('reloading'),
 })
 
 export const langState = atom({
@@ -179,7 +179,7 @@ export const starterFormState = selector({
     const pkg = get(packageState)
     const servlet = get(servletState)
     const gorm = get(gormState)
-    const test = get(testState)
+    const reloading = get(reloadingState)
     const javaVersion = get(javaVersionState)
     const features = get(featuresState)
 
@@ -193,7 +193,7 @@ export const starterFormState = selector({
       javaVersion,
       gorm,
       servlet,
-      test,
+      reloading,
       features,
     })
   },
@@ -376,9 +376,25 @@ export const useApplicationType = () => {
   return [value, setter, select]
 }
 
-export const useTestFramework = () => {
-  const [value, setter] = useRecoilState(testState)
-  const select = useSelectOptionsForType('test')
+export const useReloadingFramework = () => {
+  const [value, setter] = useRecoilState(reloadingState)
+  const defaultSelect = {
+      "options": [
+          {
+              "name": "devtools",
+              "description": "Spring Dev Tools",
+              "value": "DEVTOOLS",
+              "label": "Spring Boot Dev Tools"
+          }
+      ],
+      "defaultOption": {
+          "name": "devtools",
+          "description": "Spring Dev Tools",
+          "value": "DEVTOOLS",
+          "label": "Spring Boot Dev Tools"
+      }
+  }
+  const select = useSelectOptionsForType('reloading') ?? defaultSelect
   useDerivedDefultsEffect(select, setter)
   return [value, setter, select]
 }
@@ -445,7 +461,7 @@ export const useResetStarterForm = () => {
     set(appTypeState, options.type.defaultOption.value)
     set(servletState, options.servlet.defaultOption.value)
     set(gormState, options.gorm.defaultOption.value)
-    set(testState, options.test.defaultOption.value)
+    set(reloadingState, options.reloading.defaultOption.value)
     set(javaVersionState, options.jdkVersion.defaultOption.value)
     set(featuresState, {})
   })

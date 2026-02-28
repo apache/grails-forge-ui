@@ -144,3 +144,10 @@ You can find the version feed file at [./app/launch/public/grails-version-feed.j
       ...
   },
   ```
+## Running the React app without changing grails-version-feed.json
+In dev-proxy-server/ there is a run.command file that will expose the proxies of the grails version feed on port 8088.
+When starting the React app under app/launch use the command:
+```shell
+npm run start:local
+```
+This will run the React app while retargetig the version feed for it to localhost:8088.

@@ -46,7 +46,7 @@ const TestView = ({ sdk, applicationType, onError }) => {
     if (error) onError(error)
   }, [error, onError])
 
-  return <div className="test">{JSON.stringify(features, null, 2)}</div>
+  return <div className="reloading">{JSON.stringify(features, null, 2)}</div>
 }
 
 const TEST_DATA = [

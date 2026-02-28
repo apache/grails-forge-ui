@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const VERSION_FEED_URL = "https://latest.grails.org/grails-version-feed.json";
+const VERSION_FEED_URL = "https://start.grails.org/grails-version-feed.json";
 const { startVersionServer, toLocalUrl } = require("./commands");
 
 /**

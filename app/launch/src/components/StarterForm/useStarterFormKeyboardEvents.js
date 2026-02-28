@@ -4,7 +4,7 @@ import {
   NEXT_GORM_SHORTCUT,
   NEXT_JDK_SHORTCUT,
   NEXT_SERVLET_SHORTCUT,
-  NEXT_TEST_SHORTCUT,
+  NEXT_RELOADING_SHORTCUT,
   NEXT_VERSION_SHORTCUT,
 } from '../../constants/shortcuts'
 
@@ -42,7 +42,7 @@ export function useStarterVersionKeyboardEvents(
 export function useStarterFormKeyboardEvents(
   handleChange,
   form,
-  { TEST_OPTS, APP_TYPES, JAVA_OPTS, GORM_OPTS, SERVLET_OPTS }
+  { RELOADING_OPTS, APP_TYPES, JAVA_OPTS, GORM_OPTS, SERVLET_OPTS }
 ) {
   const nextType = useOptHandler('type', form.type, APP_TYPES, handleChange)
   useKeyboardShortcuts(NEXT_APP_TYPE_SHORTCUT.keys, nextType)
@@ -56,6 +56,6 @@ export function useStarterFormKeyboardEvents(
   const nextServlet = useOptHandler('servlet', form.servlet, SERVLET_OPTS, handleChange)
   useKeyboardShortcuts(NEXT_SERVLET_SHORTCUT.keys, nextServlet)
 
-  const nextTest = useOptHandler('test', form.test, TEST_OPTS, handleChange)
-  useKeyboardShortcuts(NEXT_TEST_SHORTCUT.keys, nextTest)
+  const nextReloading = useOptHandler('reloading', form.reloading, RELOADING_OPTS, handleChange)
+  useKeyboardShortcuts(NEXT_RELOADING_SHORTCUT.keys, nextReloading)
 }
