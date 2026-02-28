@@ -29,7 +29,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - name: name: "🔨 Build project"
+      - name: "🔨 Build project"
         id: build
         run: ./gradlew build
       - name: Verify Run
