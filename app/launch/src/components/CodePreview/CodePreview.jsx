@@ -208,18 +208,22 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
       <Dialog
         open={open}
         onClose={onModalClose}
-        maxWidth="lg"
+        maxWidth={false}
         fullWidth
         className={`preview ${theme}`}
-        PaperProps={{ className: `preview ${theme}` }}
+        PaperProps={{
+          className: `preview ${theme}`,
+          style: { width: '95vw', height: '90vh', maxWidth: '95vw' },
+        }}
       >
-        <DialogTitle>
-          {'Previewing a Grails application using ' +
-          ' application using ' +
-          capitalize(servlet) + ', ' + capitalize(gorm)}
+        <DialogTitle style={{ paddingBottom: 0, fontSize: '24px' }}>
+          <strong style={{ fontSize: '24px' }}>
+            {'Previewing a Grails application using ' +
+            capitalize(servlet) + ', ' + capitalize(gorm)}
+          </strong>
         </DialogTitle>
-        <DialogContent>
-          <Grid container className="grid-container">
+        <DialogContent style={{ paddingTop: 8 }}>
+          <Grid container className="grid-container" style={{ paddingTop: 0 }}>
             <Grid
               item
               xs={3}
