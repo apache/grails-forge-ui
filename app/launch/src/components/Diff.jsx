@@ -66,17 +66,22 @@ const Diff = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
       <Dialog
         open={!!diff}
         onClose={handleClose}
-        maxWidth="lg"
+        maxWidth={false}
         fullWidth
         className={`diff ${theme}`}
-        PaperProps={{ className: `diff ${theme}` }}
+        PaperProps={{
+          className: `diff ${theme}`,
+          style: { width: '95vw', height: '90vh', maxWidth: '95vw' },
+        }}
       >
-        <DialogTitle>
-          {'Showing Diff for a Grails application using ' +
-            capitalize(gorm) + ', ' + capitalize(servlet)}
+        <DialogTitle style={{ paddingBottom: 0, fontSize: '24px' }}>
+          <strong style={{ fontSize: '24px' }}>
+            {'Showing Diff for a Grails application using ' +
+              capitalize(gorm) + ', ' + capitalize(servlet)}
+          </strong>
         </DialogTitle>
-        <DialogContent>
-          <Grid container className="grid-container">
+        <DialogContent style={{ paddingTop: 8 }}>
+          <Grid container className="grid-container" style={{ paddingTop: 0 }}>
             <Grid item xs={12} className={'grid-column'}>
               {diff && (
                 <SyntaxHighlighter
