@@ -12,7 +12,7 @@ export const useMicronautApiOptions = (apiUrl, onLoaded, onError) => {
   const [options, setOptions] = useState({})
   const sdk = useMicronautSdk(apiUrl)
   useEffect(() => {
-    async function load(apiUrl) {
+    async function load(_apiUrl) {
       try {
         const data = await takeAtLeast(() => sdk.selectOptions(), 700)
         setOptions(smartSetState(data))

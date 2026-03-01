@@ -13,7 +13,7 @@ const RadioGroup = ({
   tabIndex = 0,
 }) => {
   const finalOpts = loading
-    ? new Array(expected).fill().map((i) => ({ value: '', label: '...' }))
+    ? new Array(expected).fill().map((_i) => ({ value: '', label: '...' }))
     : options
 
   return (

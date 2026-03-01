@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core'
 import Icon from '@material-ui/core/Icon'
 import messages from '../../constants/messages.json'
-import { ModalKeyboardHandler } from '../../helpers/ModalKeyboardHandler'
+// import { ModalKeyboardHandler } from '../../helpers/ModalKeyboardHandler'
 import {
   useSelectedFeatures,
   useSelectedFeaturesHandlers,
@@ -23,10 +23,10 @@ import FeatureAvailable from './FeatureAvailable'
 
 import './feature-selector.css'
 
-const keyboardEventHandler = new ModalKeyboardHandler({
-  sectionKey: 'modal-group',
-  headerHeight: 24,
-})
+// const keyboardEventHandler = new ModalKeyboardHandler({
+//   sectionKey: 'modal-group',
+//   headerHeight: 24,
+// })
 
 const featureSorter = (a, b) => {
   return a.category < b.category ? -1 : a.name < b.name ? -1 : 1

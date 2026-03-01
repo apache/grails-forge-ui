@@ -2,7 +2,7 @@
 import React, { forwardRef } from 'react'
 import TextField from '@material-ui/core/TextField'
 
-const TextInput = ({ onChangeText, label, placeholder, className, id, name, s, autoComplete, value, ...rest }, ref) => {
+const TextInput = ({ onChangeText, label, placeholder, className, id, name, _s, autoComplete, value, ...rest }, ref) => {
   const onChange = (event) => {
     if (onChangeText instanceof Function) {
       const text = event.target.value

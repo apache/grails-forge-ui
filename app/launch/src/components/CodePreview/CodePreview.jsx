@@ -7,6 +7,8 @@ import React, {
   useImperativeHandle,
 } from 'react'
 
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+
 import {
   Button,
   Dialog,
@@ -18,7 +20,6 @@ import {
 import Icon from '@material-ui/core/Icon'
 import TreeItem from '@material-ui/lab/TreeItem'
 import TreeView from '@material-ui/lab/TreeView'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 
 import { darcula } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import { prism } from 'react-syntax-highlighter/dist/cjs/styles/prism'
@@ -143,7 +144,7 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
     const parts = showing.split('/').filter((i) => i)
     let contents = preview
     let key = ''
-    while (contents && typeof match !== 'string' && parts.length) {
+    while (contents && typeof contents !== 'string' && parts.length) {
       key = parts.shift()
       contents = contents[key]
     }
@@ -181,7 +182,11 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
               nodeId={nodeId}
               label={key}
               className={className}
-              onClick={() => handleFileSelection(key, children, nodeId)}
+              onClick={() => {
+                if (typeof children === 'string' || children === null) {
+                  handleFileSelection(key, children, nodeId)
+                }
+              }}
             >
               {renderTree(children, nodeId)}
             </TreeItem>

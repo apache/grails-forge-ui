@@ -21,7 +21,7 @@ import {
 import { useSharableLink } from '../../state/store'
 import CopyToClipboard from '../CopyToClipboard'
 
-const ShareModal = ({ theme, trigger, onClose }, ref) => {
+const ShareModal = ({ theme, trigger, onClose }, _ref) => {
   const sharable = useSharableLink()
   const [open, setOpen] = useState(false)
 
@@ -90,7 +90,7 @@ const ShareModal = ({ theme, trigger, onClose }, ref) => {
             )
           })}
           <p className="info">
-            Once you've gotten your new project started, you can continue your
+            Once you{"'"}ve gotten your new project started, you can continue your
             journey by reviewing our{' '}
             <a href="https://grails.org/documentation.html">documentation</a> and{' '}
             <a href="https://guides.grails.org/index.html">Grails Guides</a>

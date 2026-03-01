@@ -13,7 +13,7 @@ const FeatureAvailable = ({ feature, toggleFeatures }) => {
         <Card
             id={`mn-feature-${feature.name}`}
             className={`mn-feature-selection hoverable ${
-                feature.selected && 'selected'
+                feature.selected ? 'selected' : ''
             }`}
             onClick={(e) => toggleFeatures(e, feature)}
             style={{ cursor: 'pointer', position: 'relative' }}

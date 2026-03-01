@@ -109,7 +109,7 @@ export const copyToClipboard = async (str) => {
     return window.navigator.clipboard.writeText(str)
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     const el = document.createElement('textarea')
     el.value = str
     el.setAttribute('readonly', '')

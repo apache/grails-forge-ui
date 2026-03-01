@@ -14,7 +14,7 @@ const theme = createTheme({
   },
 })
 
-const TooltipButton = ({ tooltip, children, disabled, className, style, onClick, tabIndex, ...props }) => {
+const TooltipButton = ({ tooltip, children, disabled, className, style, onClick, tabIndex, ..._props }) => {
   return (
     <ThemeProvider theme={theme}>
       <Tooltip

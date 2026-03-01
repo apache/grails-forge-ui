@@ -160,7 +160,7 @@ export function AppContainer({ initialData, errorHandlers }) {
   const getFormData = useGetStarterForm()
 
   // GitHub Clone Feat
-  const onCloneProject = async (e) => {
+  const onCloneProject = async (_e) => {
     setLoading(true)
   }
 
