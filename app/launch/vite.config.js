@@ -8,7 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [svgr(), react()],
-  base: './',
+  base: '/',
   server: {
     port: 3000,
     open: true,
@@ -17,8 +17,10 @@ export default defineConfig({
     outDir: 'build',
     rollupOptions: {
       output: {
-        manualChunks: {
-          mui: ['@material-ui/core', '@material-ui/icons', '@material-ui/lab'],
+        manualChunks(id) {
+          if (id.includes('@material-ui/')) {
+            return 'mui'
+          }
         },
       },
     },
