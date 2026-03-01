@@ -13,32 +13,36 @@ import StarterFormServlet from './StarterFormServlet'
 
 const StarterForm = ({ onError }) => {
   return (
-    <Grid container spacing={1} className="mn-starter-form-main" alignItems="flex-end">
-      <Grid item xs={12} sm={6} md={3}>
-        <StarterFormApplicationType />
+    <div className="mn-starter-form-main">
+      <Grid container spacing={1} alignItems="flex-end">
+        <Grid item xs={12} sm={6} md={3}>
+          <StarterFormApplicationType />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <StarterFormJavaVersion />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <StarterFormName />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <StarterFormPackage />
+        </Grid>
       </Grid>
-      <Grid item xs={12} sm={6} md={3}>
-        <StarterFormJavaVersion />
+      <Grid container spacing={1} alignItems="flex-start" className="mn-radio-row">
+        <Grid item sm={3} xs={12} className="mn-radio">
+          <StarterFormMicronautVersion />
+        </Grid>
+        <Grid item sm={3} xs={12} className="mn-radio">
+          <StarterFormGorm />
+        </Grid>
+        <Grid item sm={3} xs={12} className="mn-radio">
+          <StarterFormServlet />
+        </Grid>
+        <Grid item sm={3} xs={12} className="mn-radio">
+          <StarterFormReloadingFramework />
+        </Grid>
       </Grid>
-      <Grid item xs={12} sm={6} md={3}>
-        <StarterFormName />
-      </Grid>
-      <Grid item xs={12} sm={6} md={3}>
-        <StarterFormPackage />
-      </Grid>
-      <Grid item sm={3} xs={12} className="mn-radio">
-        <StarterFormMicronautVersion />
-      </Grid>
-      <Grid item sm={3} xs={12} className="mn-radio">
-        <StarterFormGorm />
-      </Grid>
-      <Grid item sm={3} xs={12} className="mn-radio">
-        <StarterFormServlet />
-      </Grid>
-      <Grid item sm={3} xs={12} className="mn-radio">
-        <StarterFormReloadingFramework />
-      </Grid>
-    </Grid>
+    </div>
   )
 }
 

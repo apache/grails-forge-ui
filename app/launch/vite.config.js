@@ -27,4 +27,8 @@ export default defineConfig({
     // Support CRA-style env variable access
     'process.env': {},
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+  },
 })

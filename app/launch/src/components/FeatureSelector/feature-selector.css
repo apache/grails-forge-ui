@@ -1,4 +1,8 @@
 /* Modal */
+.mn-feature-modal {
+  font-family: 'Fira Sans', sans-serif;
+}
+
 .mn-feature-modal .MuiDialogContent-root h4 {
   position: sticky;
   top: 0;
@@ -45,6 +49,10 @@
 /* Fab close button on selected feature cards — white icon on black bg */
 .mn-feature-selection .remove-button {
   color: #fff;
+}
+
+.mn-feature-selection .MuiTypography-body2 {
+  font-size: 16px !important;
 }
 
 .mn-feature-container .MuiCard-root .MuiCardContent-root p,
