@@ -11,7 +11,7 @@ import StarterFormPackage from './StarterFormPackage'
 import StarterFormReloadingFramework from './StarterFormReloadingFramework'
 import StarterFormServlet from './StarterFormServlet'
 
-const StarterForm = ({ onError }) => {
+const StarterForm = ({ _onError }) => {
   return (
     <div className="mn-starter-form-main">
       <Grid container spacing={1} alignItems="flex-end">

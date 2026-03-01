@@ -2,16 +2,28 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [svgr(), react()],
-  base: './',
+  base: '/',
   server: {
     port: 3000,
     open: true,
   },
   build: {
     outDir: 'build',
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('@material-ui/')) {
+            return 'mui'
+          }
+        },
+      },
+    },
   },
   resolve: {
     alias: {
@@ -22,10 +34,6 @@ export default defineConfig({
         'node_modules/@materializecss/materialize/dist/css'
       ),
     },
-  },
-  define: {
-    // Support CRA-style env variable access
-    'process.env': {},
   },
   test: {
     globals: true,

@@ -15,6 +15,12 @@ module.exports = {
   },
   plugins: ['react', 'import'],
   rules: {
+    // React 17+ automatic JSX transform does not require React in scope
+    'react/react-in-jsx-scope': 'off',
+    // Project does not use PropTypes
+    'react/prop-types': 'off',
+    'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    'no-case-declarations': 'warn',
     'import/order': [
       'error',
       {
@@ -41,4 +47,12 @@ module.exports = {
       },
     ],
   },
+  overrides: [
+    {
+      files: ['**/__tests__/**', '**/*.test.*'],
+      env: {
+        jest: true,
+      },
+    },
+  ],
 }

@@ -28,7 +28,7 @@ export class SessionStorageAdapter extends CacheStorageAdapterAbstract {
       if (data) {
         return JSON.parse(data)
       }
-    } catch (error) {}
+    } catch (_error) { /* malformed JSON in storage, return undefined */ }
   }
 
   setItem(key, data) {
@@ -47,7 +47,7 @@ export class LocalStorageAdapter extends CacheStorageAdapterAbstract {
       if (data) {
         return JSON.parse(data)
       }
-    } catch (error) {}
+    } catch (_error) { /* malformed JSON in storage, return undefined */ }
   }
 
   setItem(key, data) {

@@ -1,5 +1,5 @@
 // FeatureSelector.js
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 
 import {
   Button,
@@ -23,7 +23,7 @@ import FeatureAvailable from './FeatureAvailable'
 
 import './feature-selector.css'
 
-const keyboardEventHandler = new ModalKeyboardHandler({
+const keyboardHandler = new ModalKeyboardHandler({
   sectionKey: 'modal-group',
   headerHeight: 24,
 })
@@ -58,6 +58,7 @@ const FeatureAvailableGroup = ({ category, entities, toggleFeatures }) => {
 
 export const FeatureSelectorModal = ({ theme = 'light' }) => {
   const inputRef = useRef(null)
+  const contentRef = useRef(null)
   const [open, setOpen] = useState(false)
 
   const [selectedFeatures, , features, loading] = useSelectedFeatures()
@@ -117,6 +118,11 @@ export const FeatureSelectorModal = ({ theme = 'light' }) => {
     }, 300)
   }
 
+  const handleKeyDown = useCallback(
+    keyboardHandler.createKeyDownHandler(() => contentRef.current),
+    []
+  )
+
   const handleClose = () => {
     setOpen(false)
   }
@@ -145,8 +151,9 @@ export const FeatureSelectorModal = ({ theme = 'light' }) => {
           className: `mn-feature-modal ${theme}`,
           style: { maxHeight: '90vh', height: '90vh' },
         }}
+        onKeyDown={handleKeyDown}
       >
-        <DialogContent>
+        <DialogContent ref={contentRef}>
           <h4>
             <div className="modal-header">
               <TextInput

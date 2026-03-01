@@ -6,6 +6,8 @@ import React, {
   useMemo,
 } from 'react'
 
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+
 import {
   Button,
   Dialog,
@@ -15,7 +17,6 @@ import {
   Grid,
 } from '@material-ui/core'
 import Icon from '@material-ui/core/Icon'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 
 import { darcula } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import { prism } from 'react-syntax-highlighter/dist/cjs/styles/prism'

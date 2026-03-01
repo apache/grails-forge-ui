@@ -264,7 +264,7 @@ export class MicronautStarterSDK {
     )
 
     const maybeLoadVersion = (version) =>
-      this.loadVersion(version).catch((i) => null)
+      this.loadVersion(version).catch((_i) => null)
 
     return (
       await Promise.all(

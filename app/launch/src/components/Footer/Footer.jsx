@@ -9,7 +9,7 @@ import MailToLink from '../Links/MailToLink'
 import Twitter from '../Links/TwitterLink'
 import ShareModal from '../NextSteps/ShareModal'
 
-const Footer = ({ info, theme, onToggleTheme, onShowInfo, sharable }) => {
+const Footer = ({ _info, theme, onToggleTheme, _onShowInfo, sharable }) => {
   const [active, setActive] = useState(false)
   const toggle = (e) => {
     e.preventDefault()
@@ -18,7 +18,7 @@ const Footer = ({ info, theme, onToggleTheme, onShowInfo, sharable }) => {
   }
 
   useEffect(() => {
-    const listener = (e) => {
+    const listener = (_e) => {
       setActive(false)
     }
     window.addEventListener('click', listener)
