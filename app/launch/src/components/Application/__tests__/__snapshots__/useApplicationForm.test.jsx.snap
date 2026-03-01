@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Initial Form Data with "" 1`] = `
 Array [
@@ -200,86 +200,6 @@ Array [
 ]
 `;
 
-exports[`Initial Form Data with "servlet" 1`] = `
-Array [
-  <div
-    className="type"
-  >
-    WEB
-  </div>,
-  <div
-    className="reloading"
-  >
-    
-  </div>,
-  <div
-    className="servlet"
-  >
-    spring-boot-starter-tomcat
-  </div>,
-  <div
-    className="gorm"
-  >
-    
-  </div>,
-  <div
-    className="javaVersion"
-  >
-    
-  </div>,
-  <div
-    className="name"
-  >
-    demo
-  </div>,
-  <div
-    className="package"
-  >
-    com.example
-  </div>,
-]
-`;
-
-exports[`Initial Form Data with "servlet" 2`] = `
-Array [
-  <div
-    className="type"
-  >
-    WEB
-  </div>,
-  <div
-    className="reloading"
-  >
-    
-  </div>,
-  <div
-    className="servlet"
-  >
-    NONE
-  </div>,
-  <div
-    className="gorm"
-  >
-    
-  </div>,
-  <div
-    className="javaVersion"
-  >
-    
-  </div>,
-  <div
-    className="name"
-  >
-    demo
-  </div>,
-  <div
-    className="package"
-  >
-    com.example
-  </div>,
-]
-`;
-
 exports[`Initial Form Data with "reloading" 1`] = `
 Array [
   <div
@@ -290,22 +210,22 @@ Array [
   <div
     className="reloading"
   >
-    SPOCK
+    JREBEL
   </div>,
   <div
     className="servlet"
   >
-    
+
   </div>,
   <div
     className="gorm"
   >
-    
+
   </div>,
   <div
     className="javaVersion"
   >
-    
+
   </div>,
   <div
     className="name"
@@ -335,7 +255,87 @@ Array [
   <div
     className="servlet"
   >
-    
+
+  </div>,
+  <div
+    className="gorm"
+  >
+
+  </div>,
+  <div
+    className="javaVersion"
+  >
+
+  </div>,
+  <div
+    className="name"
+  >
+    demo
+  </div>,
+  <div
+    className="package"
+  >
+    com.example
+  </div>,
+]
+`;
+
+exports[`Initial Form Data with "servlet" 1`] = `
+Array [
+  <div
+    className="type"
+  >
+    WEB
+  </div>,
+  <div
+    className="reloading"
+  >
+
+  </div>,
+  <div
+    className="servlet"
+  >
+    spring-boot-starter-tomcat
+  </div>,
+  <div
+    className="gorm"
+  >
+
+  </div>,
+  <div
+    className="javaVersion"
+  >
+
+  </div>,
+  <div
+    className="name"
+  >
+    demo
+  </div>,
+  <div
+    className="package"
+  >
+    com.example
+  </div>,
+]
+`;
+
+exports[`Initial Form Data with "servlet" 2`] = `
+Array [
+  <div
+    className="type"
+  >
+    WEB
+  </div>,
+  <div
+    className="reloading"
+  >
+
+  </div>,
+  <div
+    className="servlet"
+  >
+    NONE
   </div>,
   <div
     className="gorm"

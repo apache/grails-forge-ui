@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Initial Form Data with "BOOM" 1`] = `
 <div
@@ -10,7 +10,7 @@ exports[`Initial Form Data with "BOOM" 1`] = `
 
 exports[`Initial Form Data with "WEB" 1`] = `
 <div
-  className="test"
+  className="reloading"
 >
   [
   "a",
