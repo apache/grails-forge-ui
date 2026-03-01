@@ -71,10 +71,13 @@ export class ModalKeyboardHandler {
       const action = KEY_ACTIONS[e.key]
       if (!action) return
 
+      // Don't hijack keys when focus is inside an editable element
+      const tag = e.target.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+
       const node = typeof getScrollNode === 'function' ? getScrollNode() : null
       if (!node) return
 
-      // Prevent default scroll behavior for handled keys
       e.preventDefault()
 
       if (typeof action === 'function') {
