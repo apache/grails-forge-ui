@@ -6,6 +6,12 @@
   min-width: max-content;
 }
 
+/* Files that cannot be previewed */
+.non-previewable {
+  color: #888 !important;
+  font-style: italic;
+}
+
 .code-preview.footer-wrapper {
   display: flex;
   flex-direction: row;

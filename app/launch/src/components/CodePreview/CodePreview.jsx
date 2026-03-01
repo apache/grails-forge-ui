@@ -62,6 +62,11 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
     path: null,
   })
 
+  const { defaultSelected, defaultExpanded } = useMemo(
+    () => extractDefaults(showing),
+    [showing]
+  )
+
   const shareLink = useMemo(() => {
     let link = fullyQualifySharableLink(sharable, {
       [ACTIVITY_KEY]: PREVIEW_ACTIVITY,
@@ -104,6 +109,9 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
         language = 'bash'
       }
       setCurrentFile({ contents, language, path })
+    } else {
+      // File cannot be previewed (null or object contents)
+      setCurrentFile({ contents: null, language: null, path })
     }
   }
 
@@ -114,24 +122,21 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
       }
     }
 
-    const parts = path.split('/')
+    // nodeIds in renderTree are built as `/${key}` so prefix with /
+    const fullPath = path.startsWith('/') ? path : '/' + path
+    const parts = fullPath.split('/').filter((i) => i)
     const defaultExpanded = []
-    while (parts.length) {
-      defaultExpanded.push(parts.join('/'))
-      parts.pop()
+    // Build expanded paths from root down (e.g. /src, /src/main, /src/main/groovy)
+    for (let i = 1; i <= parts.length; i++) {
+      defaultExpanded.push('/' + parts.slice(0, i).join('/'))
     }
     return {
-      defaultSelected: path,
+      defaultSelected: fullPath,
       defaultExpanded,
     }
   }
-
-  const { defaultSelected, defaultExpanded } = useMemo(
-    () => extractDefaults(showing),
-    [showing]
-  )
-
-  useEffect(() => {
+ 
+   useEffect(() => {
     if (typeof showing !== 'string') {
       return
     }
@@ -143,7 +148,8 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
       contents = contents[key]
     }
     if (key && contents) {
-      handleFileSelection(key, contents, showing)
+      const nodeId = showing.startsWith('/') ? showing : '/' + showing
+      handleFileSelection(key, contents, nodeId)
     }
   }, [preview, showing])
 
@@ -166,11 +172,15 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
         .map((key) => {
           const children = nodes[key]
           const nodeId = `${rootKey}/${key}`
+          const isFile = typeof children === 'string'
+          const isFolder = typeof children === 'object' && children !== null
+          const className = isFile || isFolder ? '' : 'non-previewable'
           return (
             <TreeItem
               key={nodeId}
               nodeId={nodeId}
               label={key}
+              className={className}
               onClick={() => handleFileSelection(key, children, nodeId)}
             >
               {renderTree(children, nodeId)}
@@ -217,7 +227,7 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
               style={{ borderRight: '1px solid' }}
             >
               <TreeView
-                key={defaultSelected}
+                key={`${defaultSelected}-${Object.keys(preview).length}`}
                 defaultCollapseIcon={<Icon>folder_open</Icon>}
                 defaultExpandIcon={<Icon>folder</Icon>}
                 defaultEndIcon={<Icon>description</Icon>}
@@ -228,7 +238,7 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
               </TreeView>
             </Grid>
             <Grid item xs={9} className={'grid-column'}>
-              {currentFile.contents && (
+              {currentFile.contents ? (
                 <SyntaxHighlighter
                   className="codePreview"
                   language={currentFile.language}
@@ -237,7 +247,13 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
                 >
                   {currentFile.contents}
                 </SyntaxHighlighter>
-              )}
+              ) : currentFile.path ? (
+                <div style={{ padding: '16px', color: '#999' }}>
+                  {currentFile.contents === ''
+                    ? 'This file has no content.'
+                    : 'This file cannot be previewed.'}
+                </div>
+              ) : null}
             </Grid>
           </Grid>
         </DialogContent>
