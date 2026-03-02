@@ -1,4 +1,4 @@
-import { ReactComponent as BackdropImage } from '../../images/grails-forge-logo.svg'
+import BackdropImage from '../../images/grails-forge-logo.svg?react'
 
 export function AppLoadingBackdrop({ children }) {
   return (

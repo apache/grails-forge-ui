@@ -29,7 +29,8 @@
 }
 
 .radio-group label,
-.input-field label {
+.input-field label,
+.MuiFormLabel-root.MuiInputLabel-root {
   font-family: 'Roboto', sans-serif !important;
   font-size: 0.75rem !important;
   font-weight: 400 !important;

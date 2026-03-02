@@ -1,26 +1,29 @@
 /* Modal */
-.mn-feature-modal .modal-content h4 {
-  position: fixed;
+.mn-feature-modal {
+  font-family: 'Fira Sans', sans-serif;
+}
+
+.mn-feature-modal .MuiDialogContent-root h4 {
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
   z-index: 1001;
-  padding: 0px 0.8em;
-  padding-top: 8px;
+  margin: 0 -24px;
+}
+
+.mn-feature-modal .modal-header {
+  padding: 16px 24px 8px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-.mn-feature-modal .modal-content {
+.mn-feature-modal .MuiDialogContent-root {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
-  height: calc(100% - 130px);
-  margin-top: 74px;
-  margin-bottom: 56px;
-  padding-bottom: 56px;
+  padding: 0 24px 56px;
+  padding-top: 0 !important;
 }
 
-.mn-feature-modal .modal-content h4 .helper-text {
+.mn-feature-modal .MuiDialogContent-root h4 .helper-text {
   display: none;
 }
 
@@ -29,27 +32,49 @@
   left: 0;
 }
 /* Modal Cards */
+.mn-feature-container .MuiCard-root,
 .mn-feature-container .card {
   cursor: pointer;
   user-select: none;
 }
 
+.mn-feature-selection {
+  margin-bottom: 4px;
+}
+
+.mn-feature-selection.selected {
+  overflow: visible;
+}
+
+/* Fab close button on selected feature cards — white icon on black bg */
+.mn-feature-selection .remove-button {
+  color: #fff;
+}
+
+.mn-feature-selection .MuiTypography-body2 {
+  font-size: 16px !important;
+}
+
+.mn-feature-container .MuiCard-root .MuiCardContent-root p,
 .mn-feature-container .card .card-content p {
   word-break: break-word;
 }
 
+.mn-feature-container .MuiCard-root .MuiCardHeader-title,
 .mn-feature-container .card .card-title {
-  font-size: 1.2em;
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 32px;
 }
 
 /* Theming */
-body.dark .mn-feature-modal .modal-content,
-body.dark .mn-feature-modal .modal-content h4 {
+body.dark .mn-feature-modal .MuiDialogContent-root,
+body.dark .mn-feature-modal .MuiDialogContent-root h4 {
   background-color: var(--theme-dark) !important;
 }
 
-body.light .mn-feature-modal .modal-content,
-body.light .mn-feature-modal .modal-content h4 {
+body.light .mn-feature-modal .MuiDialogContent-root,
+body.light .mn-feature-modal .MuiDialogContent-root h4 {
   background-color: var(--theme-light) !important;
 }
 
@@ -69,18 +94,20 @@ body.light .mn-feature-selection.selected {
 }
 
 body.dark .mn-feature-container .selected-item-row .title,
+body.dark .mn-feature-container .MuiCard-root .MuiCardHeader-title,
 body.dark .mn-feature-container .card .card-title {
   color: white !important;
 }
 
 body.light .mn-feature-container .selected-item-row .title,
+body.light .mn-feature-container .MuiCard-root .MuiCardHeader-title,
 body.light .mn-feature-container .card .card-title {
   color: black !important;
 }
 
 /* Media */
 @media screen and (max-width: 600px) {
-  .modal.mn-feature-modal {
+  .MuiDialog-paper.mn-feature-modal {
     height: 100% !important;
     max-height: 100% !important;
     width: 100% !important;

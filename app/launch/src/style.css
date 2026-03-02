@@ -44,6 +44,7 @@ body {
 
 .mn-feature-container {
   flex: 0;
+  margin-top: 20px;
   padding-bottom: 50px;
   padding-left: 10px;
   padding-right: 10px;
@@ -307,6 +308,11 @@ body.dark svg.micronaut-foundation polygon {
 .bg-dark {
   background-color: var(--theme-dark) !important;
   color: var(--theme-light) !important;
+}
+
+.container {
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 /* Media */

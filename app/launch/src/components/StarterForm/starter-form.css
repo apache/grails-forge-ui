@@ -27,6 +27,10 @@
   margin-bottom: 5px;
 }
 
+.mn-starter-form-main .mn-radio-row {
+  margin-top: 20px;
+}
+
 .mn-starter-form-main .mn-radio .radio-row {
   position: relative;
 }
@@ -34,6 +38,11 @@
 .mn-starter-form-main .mn-radio label.input-field {
   display: block;
   margin-bottom: 5px;
+}
+
+.mn-starter-form-main .mn-radio .radio-group {
+  margin-left: 8px;
+  margin-right: 8px;
 }
 
 /* Theme */

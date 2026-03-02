@@ -1,7 +1,7 @@
 // Footer.js
 import React, { useState, useEffect } from 'react'
-import { Button } from 'react-materialize'
-import Icon from 'react-materialize/lib/Icon'
+import { Fab } from '@material-ui/core'
+import Icon from '@material-ui/core/Icon'
 import InfoButton from '../InfoButton'
 import Getter from '../Links/GetterLink'
 import GitHub from '../Links/GitHubLink'
@@ -9,7 +9,7 @@ import MailToLink from '../Links/MailToLink'
 import Twitter from '../Links/TwitterLink'
 import ShareModal from '../NextSteps/ShareModal'
 
-const Footer = ({ info, theme, onToggleTheme, onShowInfo, sharable }) => {
+const Footer = ({ _info, theme, onToggleTheme, _onShowInfo, sharable }) => {
   const [active, setActive] = useState(false)
   const toggle = (e) => {
     e.preventDefault()
@@ -18,7 +18,7 @@ const Footer = ({ info, theme, onToggleTheme, onShowInfo, sharable }) => {
   }
 
   useEffect(() => {
-    const listener = (e) => {
+    const listener = (_e) => {
       setActive(false)
     }
     window.addEventListener('click', listener)
@@ -32,9 +32,9 @@ const Footer = ({ info, theme, onToggleTheme, onShowInfo, sharable }) => {
           style={{ zIndex: 4000 }}
           onClick={toggle}
         >
-          <Button floating className={`${theme} header-icon`}>
+          <Fab size="small" className={`${theme} header-icon`}>
             <Icon>add</Icon>
-          </Button>
+          </Fab>
         </div>
         <div>
           <InfoButton theme={theme} className="header-icon" />
@@ -44,20 +44,20 @@ const Footer = ({ info, theme, onToggleTheme, onShowInfo, sharable }) => {
           theme={theme}
           trigger={
             <div>
-              <Button floating className={`${theme} header-icon`}>
+              <Fab size="small" className={`${theme} header-icon`}>
                 <Icon className="header-icon">share</Icon>
-              </Button>
+              </Fab>
             </div>
           }
         />
         <div>
-          <Button
-            floating
+          <Fab
+            size="small"
             className={`${theme} header-icon`}
             onClick={onToggleTheme}
           >
             <Icon>brightness_medium</Icon>
-          </Button>
+          </Fab>
         </div>
         <div>
           <GitHub theme={theme} className="header-icon" />

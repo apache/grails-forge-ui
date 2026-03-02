@@ -1,7 +1,5 @@
 import React, { Fragment, useState, useRef, useMemo, useCallback } from 'react'
-import { ProgressBar } from 'react-materialize'
-import Col from 'react-materialize/lib/Col'
-import Row from 'react-materialize/lib/Row'
+import { Grid, LinearProgress } from '@material-ui/core'
 
 import Lang from '../../helpers/Lang'
 import { resetRoute } from '../../helpers/Routing'
@@ -162,7 +160,7 @@ export function AppContainer({ initialData, errorHandlers }) {
   const getFormData = useGetStarterForm()
 
   // GitHub Clone Feat
-  const onCloneProject = async (e) => {
+  const onCloneProject = async (_e) => {
     setLoading(true)
   }
 
@@ -205,11 +203,11 @@ export function AppContainer({ initialData, errorHandlers }) {
                 onError={errorHandlers.onResponseError}
               />
 
-              <Row className="button-row">
-                <Col s={3} className="xs6">
+              <Grid container spacing={1} className="button-row">
+                <Grid item xs={3} className="xs6">
                   <FeatureSelectorModal theme={theme} />
-                </Col>
-                <Col s={3} className="xs6">
+                </Grid>
+                <Grid item xs={3} className="xs6">
                   <Diff
                     ref={diffView}
                     theme={theme}
@@ -217,8 +215,8 @@ export function AppContainer({ initialData, errorHandlers }) {
                     onLoad={onLoadDiff}
                     onClose={onClearDiff}
                   />
-                </Col>
-                <Col s={3} className="xs6">
+                </Grid>
+                <Grid item xs={3} className="xs6">
                   <CodePreview
                     ref={previewView}
                     theme={theme}
@@ -226,19 +224,19 @@ export function AppContainer({ initialData, errorHandlers }) {
                     onLoad={onLoadPreview}
                     onClose={onClearPreview}
                   />
-                </Col>
-                <Col s={3} className="xs6">
+                </Grid>
+                <Grid item xs={3} className="xs6">
                   <GenerateButtons
                     theme={theme}
                     disabled={disabled}
                     cloneProject={onCloneProject}
                     generateProject={onGenerateProject}
                   />
-                </Col>
-              </Row>
+                </Grid>
+              </Grid>
             </form>
             <div className="progress-container">
-              {loading && <ProgressBar />}
+              {loading && <LinearProgress />}
             </div>
           </div>
           </div>

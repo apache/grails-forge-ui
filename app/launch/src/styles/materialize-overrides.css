@@ -1,0 +1,31 @@
+/*
+ * materialize-overrides.css
+ *
+ * Fills in gaps between @materializecss/materialize v2.x
+ * and the v1.x classes this app originally used.
+ * Loaded after materialize CSS but before app styles.
+ */
+
+/* .helper-text was removed in v2; provide a minimal replacement */
+.input-field .helper-text {
+  position: relative;
+  min-height: 18px;
+  display: block;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+/* v2 chip uses MD3 color tokens; restore v1 appearance */
+.chip {
+  color: rgba(0, 0, 0, 0.6);
+  border-radius: 16px;
+}
+.chip > .material-icons {
+  color: rgba(0, 0, 0, 0.6);
+}
+body.dark .chip {
+  color: rgba(255, 255, 255, 0.8);
+}
+body.dark .chip > .material-icons {
+  color: rgba(255, 255, 255, 0.8);
+}

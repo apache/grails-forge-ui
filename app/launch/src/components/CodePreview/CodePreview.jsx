@@ -7,13 +7,19 @@ import React, {
   useImperativeHandle,
 } from 'react'
 
-import { Button } from 'react-materialize'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { Grid } from '@material-ui/core'
+
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+} from '@material-ui/core'
+import Icon from '@material-ui/core/Icon'
 import TreeItem from '@material-ui/lab/TreeItem'
 import TreeView from '@material-ui/lab/TreeView'
-import Icon from 'react-materialize/lib/Icon'
-import Modal from 'react-materialize/lib/Modal'
 
 import { darcula } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import { prism } from 'react-syntax-highlighter/dist/cjs/styles/prism'
@@ -57,6 +63,11 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
     path: null,
   })
 
+  const { defaultSelected, defaultExpanded } = useMemo(
+    () => extractDefaults(showing),
+    [showing]
+  )
+
   const shareLink = useMemo(() => {
     let link = fullyQualifySharableLink(sharable, {
       [ACTIVITY_KEY]: PREVIEW_ACTIVITY,
@@ -99,6 +110,9 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
         language = 'bash'
       }
       setCurrentFile({ contents, language, path })
+    } else {
+      // File cannot be previewed (null or object contents)
+      setCurrentFile({ contents: null, language: null, path })
     }
   }
 
@@ -109,36 +123,34 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
       }
     }
 
-    const parts = path.split('/')
+    // nodeIds in renderTree are built as `/${key}` so prefix with /
+    const fullPath = path.startsWith('/') ? path : '/' + path
+    const parts = fullPath.split('/').filter((i) => i)
     const defaultExpanded = []
-    while (parts.length) {
-      defaultExpanded.push(parts.join('/'))
-      parts.pop()
+    // Build expanded paths from root down (e.g. /src, /src/main, /src/main/groovy)
+    for (let i = 1; i <= parts.length; i++) {
+      defaultExpanded.push('/' + parts.slice(0, i).join('/'))
     }
     return {
-      defaultSelected: path,
+      defaultSelected: fullPath,
       defaultExpanded,
     }
   }
-
-  const { defaultSelected, defaultExpanded } = useMemo(
-    () => extractDefaults(showing),
-    [showing]
-  )
-
-  useEffect(() => {
+ 
+   useEffect(() => {
     if (typeof showing !== 'string') {
       return
     }
     const parts = showing.split('/').filter((i) => i)
     let contents = preview
     let key = ''
-    while (contents && typeof match !== 'string' && parts.length) {
+    while (contents && typeof contents !== 'string' && parts.length) {
       key = parts.shift()
       contents = contents[key]
     }
     if (key && contents) {
-      handleFileSelection(key, contents, showing)
+      const nodeId = showing.startsWith('/') ? showing : '/' + showing
+      handleFileSelection(key, contents, nodeId)
     }
   }, [preview, showing])
 
@@ -161,12 +173,20 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
         .map((key) => {
           const children = nodes[key]
           const nodeId = `${rootKey}/${key}`
+          const isFile = typeof children === 'string'
+          const isFolder = typeof children === 'object' && children !== null
+          const className = isFile || isFolder ? '' : 'non-previewable'
           return (
             <TreeItem
               key={nodeId}
               nodeId={nodeId}
               label={key}
-              onClick={() => handleFileSelection(key, children, nodeId)}
+              className={className}
+              onClick={() => {
+                if (typeof children === 'string' || children === null) {
+                  handleFileSelection(key, children, nodeId)
+                }
+              }}
             >
               {renderTree(children, nodeId)}
             </TreeItem>
@@ -180,32 +200,73 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
       <TooltipButton
         tooltip={messages.tooltips.preview}
         disabled={disabled}
-        waves="light"
         className={theme}
         style={{ marginRight: '5px', width: '100%' }}
         onClick={onLoad}
         tabIndex={1}
       >
-        <Icon className="action-button-icon" left>
+        <Icon className="action-button-icon" style={{ marginRight: 8 }}>
           search
         </Icon>
         Preview
       </TooltipButton>
-      <Modal
+      <Dialog
         open={open}
-        header={
-          'Previewing a Grails application using ' +
-          ' application using ' +
-          capitalize(servlet) + ', ' + capitalize(gorm)
-        }
-        className={'preview ' + theme}
-        fixedFooter
-        options={{
-          onCloseStart: onModalClose,
-          startingTop: '5%',
-          endingTop: '5%',
+        onClose={onModalClose}
+        maxWidth={false}
+        fullWidth
+        className={`preview ${theme}`}
+        PaperProps={{
+          className: `preview ${theme}`,
+          style: { width: '95vw', height: '90vh', maxWidth: '95vw' },
         }}
-        actions={
+      >
+        <DialogTitle style={{ paddingBottom: 0, fontSize: '24px' }}>
+          <strong style={{ fontSize: '24px' }}>
+            {'Previewing a Grails application using ' +
+            capitalize(servlet) + ', ' + capitalize(gorm)}
+          </strong>
+        </DialogTitle>
+        <DialogContent style={{ paddingTop: 8 }}>
+          <Grid container className="grid-container" style={{ paddingTop: 0 }}>
+            <Grid
+              item
+              xs={3}
+              className={'grid-column'}
+              style={{ borderRight: '1px solid' }}
+            >
+              <TreeView
+                key={`${defaultSelected}-${Object.keys(preview).length}`}
+                defaultCollapseIcon={<Icon>folder_open</Icon>}
+                defaultExpandIcon={<Icon>folder</Icon>}
+                defaultEndIcon={<Icon>description</Icon>}
+                defaultExpanded={defaultExpanded}
+                defaultSelected={defaultSelected}
+              >
+                {renderTree(preview)}
+              </TreeView>
+            </Grid>
+            <Grid item xs={9} className={'grid-column'}>
+              {currentFile.contents ? (
+                <SyntaxHighlighter
+                  className="codePreview"
+                  language={currentFile.language}
+                  style={theme === 'light' ? prism : darcula}
+                  showLineNumbers={true}
+                >
+                  {currentFile.contents}
+                </SyntaxHighlighter>
+              ) : currentFile.path ? (
+                <div style={{ padding: '16px', color: '#999' }}>
+                  {currentFile.contents === ''
+                    ? 'This file has no content.'
+                    : 'This file cannot be previewed.'}
+                </div>
+              ) : null}
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
           <div className="code-preview footer-wrapper">
             <div className={currentFile.contents ? '' : 'hidden'}>
               <TooltipWrapper tooltip="Copy a link back to current file">
@@ -222,47 +283,12 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
                 </div>
               </TooltipWrapper>
             </div>
-            <Button waves="light" modal="close" flat>
+            <Button onClick={onModalClose}>
               Close
             </Button>
           </div>
-        }
-      >
-        <Grid container className="grid-container">
-          <Grid
-            item
-            xs={3}
-            className={'grid-column'}
-            style={{ borderRight: '1px solid' }}
-          >
-            <TreeView
-              key={defaultSelected}
-              defaultCollapseIcon={<Icon>folder_open</Icon>}
-              defaultExpandIcon={<Icon>folder</Icon>}
-              defaultEndIcon={<Icon>description</Icon>}
-              defaultExpanded={defaultExpanded}
-              defaultSelected={defaultSelected}
-            >
-              {renderTree(preview)}
-            </TreeView>
-          </Grid>
-          <Grid item xs={9} className={'grid-column'}>
-            {currentFile.contents && (
-              <SyntaxHighlighter
-                className="codePreview"
-                lineNumberContainerProps={{
-                  className: 'lineNumbers',
-                }}
-                language={currentFile.language}
-                style={theme === 'light' ? prism : darcula}
-                showLineNumbers={true}
-              >
-                {currentFile.contents}
-              </SyntaxHighlighter>
-            )}
-          </Grid>
-        </Grid>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     </React.Fragment>
   )
 }

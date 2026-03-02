@@ -1,14 +1,14 @@
 .select-wrapper {
   width: 100%;
-  margin-top: 3px;
+  margin-top: 0;
 }
 
 .MuiSelect-root.MuiSelect-select.MuiSelect-selectMenu.MuiInputBase-input.MuiInput-input {
-  padding-bottom: 12px !important;
+  padding-bottom: 7px !important;
 }
 
 .select-wrapper label + .MuiInput-formControl {
-  margin-top: 19px;
+  margin-top: 16px;
 }
 
 .MuiFormControl-root {
@@ -17,7 +17,6 @@
 
 .MuiFormLabel-root.MuiInputLabel-root {
   left: 0 !important;
-  font-size: 1rem;
 }
 
 .MuiSelect-select:focus {
