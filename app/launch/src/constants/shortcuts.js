@@ -57,7 +57,7 @@ export const NEXT_JDK_SHORTCUT = {
 }
 
 export const NEXT_GORM_SHORTCUT = {
-  label: 'Toggle to the next GORM Implementation',
+  label: 'Toggle to the next Grails Data Implementation',
   textValue: SHIFT_TEXT + ' + G',
   keys: [KEY_CODE_SHIFT, KEY_CODE_G],
 }

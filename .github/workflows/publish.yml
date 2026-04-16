@@ -11,14 +11,14 @@ jobs:
         java: ['17']
     steps:
       - name: "📥 Checkout repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: "☕️ Setup JDK"
         uses: actions/setup-java@v5
         with:
           distribution: 'liberica'
           java-version: ${{ matrix.java }}
       - name: "🐘 Setup Gradle"
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@748248ddd2a24f49513d8f472f81c3a07d4d50e1 # v4.4.4
         with:
           develocity-access-key: ${{ secrets.GRAILS_DEVELOCITY_ACCESS_KEY  }}
       - name: Publish Grails Forge UI

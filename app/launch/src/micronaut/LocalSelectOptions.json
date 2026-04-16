@@ -108,20 +108,20 @@
             {
                 "value": "gorm-hibernate5",
                 "name": "gorm-hibernate5",
-                "description" : "The Hibernate5 GORM Implementation",
-                "label": "GORM Hibernate5"
+                "description" : "The Hibernate5 Grails Data Implementation",
+                "label": "Grails Data Hibernate5"
             },
             {
                 "value": "gorm-mongodb",
                 "name": "gorm-mongodb",
-                "description" : "The MongoDB GORM Implementation",
-                "label": "GORM MongoDB"
+                "description" : "The MongoDB Grails Data Implementation",
+                "label": "Grails Data MongoDB"
             },
             {
                 "value": "gorm-neo4j",
                 "name": "gorm-neo4j",
-                "description" : "The Neo4J GORM Implementation",
-                "label": "GORM Neo4J"
+                "description" : "The Neo4J Grails Data Implementation",
+                "label": "Grails Data Neo4J"
             }
         ]
     },
