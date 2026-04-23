@@ -17,7 +17,7 @@
     "devDependencies": {
         "@vitejs/plugin-react": "^6.0.1",
         "baseline-browser-mapping": "^2.10.0",
-        "eslint": "^8.57.1",
+        "eslint": "^10.2.1",
         "eslint-plugin-import": "^2.32.0",
         "eslint-plugin-react": "^7.37.5",
         "jsdom": "^28.1.0",
