@@ -22,7 +22,7 @@
         "eslint-plugin-react": "^7.37.5",
         "jsdom": "^28.1.0",
         "prettier": "^2.3.0",
-        "react-test-renderer": "^17.0.2",
+        "react-test-renderer": "^19.2.5",
         "vite": "^8.0.8",
         "vite-plugin-svgr": "^5.2.0",
         "vitest": "^4.1.4"
