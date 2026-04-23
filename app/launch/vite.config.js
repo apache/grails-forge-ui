@@ -15,7 +15,7 @@ export default defineConfig({
   },
   build: {
     outDir: 'build',
-    rollupOptions: {
+    rolldownOptions: {
       output: {
         manualChunks(id) {
           if (id.includes('@material-ui/')) {

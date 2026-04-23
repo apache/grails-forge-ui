@@ -14,7 +14,7 @@ export default function StarterFormGorm() {
   return (
     <RadioGroup
       tabIndex={1}
-      label="GORM Implementation"
+      label="Grails Data Implementation"
       id="gorm"
       name="gorm"
       value={value}
