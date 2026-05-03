@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { RecoilRoot } from 'recoil'
+import { useEffect } from 'react'
+import { useAppStore } from './store'
 import { initializeStateFactory } from './factories/initializeState'
 
 export default function ApplicationState({
@@ -7,10 +7,16 @@ export default function ApplicationState({
   stateInitializer,
   children,
 }) {
-  const initializeState = useMemo(() => {
-    if (typeof stateInitializer === 'function') return stateInitializer
-    return initializeStateFactory(initialData)
-  }, [initialData, stateInitializer])
+  useEffect(() => {
+    const initializer = typeof stateInitializer === 'function'
+      ? stateInitializer
+      : initializeStateFactory(initialData)
 
-  return <RecoilRoot initializeState={initializeState}>{children}</RecoilRoot>
+    // Apply initial state to the store
+    if (typeof initializer === 'function') {
+      initializer(useAppStore)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  return <>{children}</>
 }

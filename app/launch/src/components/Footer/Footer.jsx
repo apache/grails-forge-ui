@@ -1,7 +1,6 @@
 // Footer.js
 import React, { useState, useEffect } from 'react'
-import { Fab } from '@material-ui/core'
-import Icon from '@material-ui/core/Icon'
+import { Fab, Icon } from '@mui/material'
 import InfoButton from '../InfoButton'
 import Getter from '../Links/GetterLink'
 import GitHub from '../Links/GitHubLink'

@@ -1,14 +1,16 @@
 // TooltipButton.js
 import React from 'react'
-import Button from '@material-ui/core/Button'
-import { createTheme, ThemeProvider } from '@material-ui/core/styles'
-import Tooltip from '@material-ui/core/Tooltip'
+import Button from '@mui/material/Button'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import Tooltip from '@mui/material/Tooltip'
 
 const theme = createTheme({
-  overrides: {
+  components: {
     MuiTooltip: {
-      tooltip: {
-        fontSize: '0.9em',
+      styleOverrides: {
+        tooltip: {
+          fontSize: '0.9em',
+        },
       },
     },
   },

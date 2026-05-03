@@ -16,10 +16,10 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-} from '@material-ui/core'
-import Icon from '@material-ui/core/Icon'
-import TreeItem from '@material-ui/lab/TreeItem'
-import TreeView from '@material-ui/lab/TreeView'
+  Icon,
+} from '@mui/material'
+import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView'
+import { TreeItem } from '@mui/x-tree-view/TreeItem'
 
 import { darcula } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import { prism } from 'react-syntax-highlighter/dist/cjs/styles/prism'
@@ -136,8 +136,8 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
       defaultExpanded,
     }
   }
- 
-   useEffect(() => {
+
+  useEffect(() => {
     if (typeof showing !== 'string') {
       return
     }
@@ -179,7 +179,7 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
           return (
             <TreeItem
               key={nodeId}
-              nodeId={nodeId}
+              itemId={nodeId}
               label={key}
               className={className}
               onClick={() => {
@@ -230,23 +230,24 @@ const CodePreview = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
         <DialogContent style={{ paddingTop: 8 }}>
           <Grid container className="grid-container" style={{ paddingTop: 0 }}>
             <Grid
-              item
-              xs={3}
+              size={3}
               className={'grid-column'}
               style={{ borderRight: '1px solid' }}
             >
-              <TreeView
+              <SimpleTreeView
                 key={`${defaultSelected}-${Object.keys(preview).length}`}
-                defaultCollapseIcon={<Icon>folder_open</Icon>}
-                defaultExpandIcon={<Icon>folder</Icon>}
-                defaultEndIcon={<Icon>description</Icon>}
-                defaultExpanded={defaultExpanded}
-                defaultSelected={defaultSelected}
+                defaultExpandedItems={defaultExpanded || []}
+                defaultSelectedItems={defaultSelected}
+                slots={{
+                  collapseIcon: () => <Icon>folder_open</Icon>,
+                  expandIcon: () => <Icon>folder</Icon>,
+                  endIcon: () => <Icon>description</Icon>,
+                }}
               >
                 {renderTree(preview)}
-              </TreeView>
+              </SimpleTreeView>
             </Grid>
-            <Grid item xs={9} className={'grid-column'}>
+            <Grid size={9} className={'grid-column'}>
               {currentFile.contents ? (
                 <SyntaxHighlighter
                   className="codePreview"

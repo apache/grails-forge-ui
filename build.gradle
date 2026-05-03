@@ -18,11 +18,11 @@ task copyLaunchAssets {
     doLast {
         copy {
             from "${rootProject.projectDir}/app/launch/build"
-            into "${project.buildDir}/launch"
+            into layout.buildDirectory.dir("launch")
         }
         copy {
             from "${rootProject.projectDir}/app/start"
-            into "${project.buildDir}/start"
+            into layout.buildDirectory.dir("start")
             include '*.html'
         }
     }

@@ -1,7 +1,7 @@
 // MailToLink.js
 import React from 'react'
 
-import MailToIcon from '@material-ui/icons/MailOutline'
+import MailToIcon from '@mui/icons-material/MailOutline'
 
 export const MailToLink = ({ className, theme }) => {
   const backgroundColor =

@@ -1,7 +1,7 @@
 // TwitterLink.js
 import React from 'react'
 
-import TwitterIcon from '@material-ui/icons/Twitter'
+import TwitterIcon from '@mui/icons-material/Twitter'
 
 export const TwitterLink = ({ className, theme }) => {
   const backgroundColor =

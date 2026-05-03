@@ -15,10 +15,10 @@ export default defineConfig({
   },
   build: {
     outDir: 'build',
-    rolldownOptions: {
+    rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('@material-ui/')) {
+          if (id.includes('@mui/')) {
             return 'mui'
           }
         },

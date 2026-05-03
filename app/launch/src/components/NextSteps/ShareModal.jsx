@@ -8,7 +8,7 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-} from '@material-ui/core'
+} from '@mui/material'
 import messages from '../../constants/messages.json'
 import {
   fullyQualifySharableLink,
@@ -81,8 +81,8 @@ const ShareModal = ({ theme, trigger, onClose }, _ref) => {
               <div key={action.link} className="next-steps-wrapper">
                 <h6 className="heading">{action.title}</h6>
                 <Grid container className="next-steps-row">
-                  <Grid item className="text">{action.link}</Grid>
-                  <Grid item className="icon">
+                  <Grid className="text">{action.link}</Grid>
+                  <Grid className="icon">
                     <CopyToClipboard value={action.link} />
                   </Grid>
                 </Grid>

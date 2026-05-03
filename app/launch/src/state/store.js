@@ -1,193 +1,119 @@
-import {useEffect, useMemo} from 'react'
-import {
-  atom,
-  selector,
-  selectorFamily,
-  useRecoilCallback,
-  useRecoilState,
-  useRecoilValue,
-  useRecoilValueLoadable,
-  useSetRecoilState,
-} from 'recoil'
+import { useEffect, useMemo } from 'react'
+import { create } from 'zustand'
 
-import {sharableLink} from '../helpers/Routing'
-
-import {setStorageValue} from '../hooks/useLocalStorage'
-import {formResets} from './factories/formResets'
-
-import {StarterSDK} from './factories/StarterSDK'
-import {loadVersions} from './factories/versionLoader'
+import { sharableLink } from '../helpers/Routing'
+import { setStorageValue } from '../hooks/useLocalStorage'
+import { formResets } from './factories/formResets'
+import { StarterSDK } from './factories/StarterSDK'
+import { loadVersions } from './factories/versionLoader'
 
 const INITIAL_FORM_DATA_STORAGE_KEY = 'INITIAL_FORM_DATA'
 
 const versionLoader = loadVersions()
 
-const defaultValueSelectorFactory = (key, fallback) =>
-  selector({
-    key: `STATE_DEFAULTS/${key}`,
-    get: ({ get }) => {
-      const initial = get(initialValueState)
-      return initial[key] ?? fallback
-    },
-  })
+// Main application store
+export const useAppStore = create((set, get) => ({
+  // Initial values
+  initialValues: {},
 
-export const initialValueState = atom({
-  key: 'INITIAL_VALUE_STATE',
-  default: {},
-})
+  // Version state
+  selectedVersion: null,
+  availableVersions: [],
 
-export const selectedVersionState = atom({
-  key: 'SELECTED_VERSION_STATE',
-  default: null,
-  effects_UNSTABLE: [
-    ({ onSet }) => {
-      onSet((version) => {
-        setStorageValue('SELECTED_MN_VERSION', version)
-      })
-    },
-  ],
-})
+  // SDK
+  sdkFactory: ({ baseUrl }) => new StarterSDK({ baseUrl }),
 
-export const availableVersionsState = selector({
-  key: 'AVAILABLE_VERSIONS_STATE',
-  get: () => versionLoader,
-})
+  // Form fields
+  name: undefined,
+  package: undefined,
+  appType: undefined,
+  reloading: undefined,
+  lang: undefined,
+  build: undefined,
+  servlet: undefined,
+  gorm: undefined,
+  javaVersion: undefined,
+  features: {},
 
-export const baseUrlState = selector({
-  key: 'BASE_URL_STATE',
-  get: ({ get }) => {
-    const selectedVersion = get(selectedVersionState)
-    return selectedVersion?.api
+  // Options (loaded from API)
+  options: {},
+  optionsLoading: false,
+
+  // Features
+  availableFeatures: [],
+  availableFeaturesLoading: false,
+  availableFeaturesError: null,
+  defaultIncludedFeatures: [],
+  defaultIncludedFeaturesLoading: false,
+
+  // Actions
+  setInitialValues: (values) => set({ initialValues: values }),
+  setSelectedVersion: (version) => {
+    setStorageValue('SELECTED_MN_VERSION', version)
+    set({ selectedVersion: version })
   },
-})
+  setAvailableVersions: (versions) => set({ availableVersions: versions }),
+  setSdkFactory: (factory) => set({ sdkFactory: factory }),
+  setName: (nameOrFn) => {
+    const s = get()
+    const newVal = typeof nameOrFn === 'function' ? nameOrFn(s.name) : nameOrFn
+    if (newVal !== s.name) set({ name: newVal })
+  },
+  setPackage: (pkgOrFn) => {
+    const s = get()
+    const newVal = typeof pkgOrFn === 'function' ? pkgOrFn(s.package) : pkgOrFn
+    if (newVal !== s.package) set({ package: newVal })
+  },
+  setAppType: (valOrFn) => {
+    const s = get()
+    const newVal = typeof valOrFn === 'function' ? valOrFn(s.appType) : valOrFn
+    if (newVal !== s.appType) set({ appType: newVal })
+  },
+  setReloading: (valOrFn) => {
+    const s = get()
+    const newVal = typeof valOrFn === 'function' ? valOrFn(s.reloading) : valOrFn
+    if (newVal !== s.reloading) set({ reloading: newVal })
+  },
+  setLang: (valOrFn) => {
+    const s = get()
+    const newVal = typeof valOrFn === 'function' ? valOrFn(s.lang) : valOrFn
+    if (newVal !== s.lang) set({ lang: newVal })
+  },
+  setBuild: (valOrFn) => {
+    const s = get()
+    const newVal = typeof valOrFn === 'function' ? valOrFn(s.build) : valOrFn
+    if (newVal !== s.build) set({ build: newVal })
+  },
+  setServlet: (valOrFn) => {
+    const s = get()
+    const newVal = typeof valOrFn === 'function' ? valOrFn(s.servlet) : valOrFn
+    if (newVal !== s.servlet) set({ servlet: newVal })
+  },
+  setGorm: (valOrFn) => {
+    const s = get()
+    const newVal = typeof valOrFn === 'function' ? valOrFn(s.gorm) : valOrFn
+    if (newVal !== s.gorm) set({ gorm: newVal })
+  },
+  setJavaVersion: (valOrFn) => {
+    const s = get()
+    const newVal = typeof valOrFn === 'function' ? valOrFn(s.javaVersion) : valOrFn
+    if (newVal !== s.javaVersion) set({ javaVersion: newVal })
+  },
+  setFeatures: (features) => set({ features: typeof features === 'function' ? features(get().features) : features }),
+  setOptions: (options) => set({ options }),
+  setOptionsLoading: (loading) => set({ optionsLoading: loading }),
 
-export const sdkFactoryState = atom({
-  key: 'MICRONAUT_SDK_CREATOR_STATE',
-  default: ({ baseUrl }) => new StarterSDK({ baseUrl }),
-})
-
-export const sdkState = selector({
-  key: 'MICRONAUT_SDK_STATE',
-  get: ({ get }) => {
-    const baseUrl = get(baseUrlState)
+  // Computed getters
+  getBaseUrl: () => get().selectedVersion?.api,
+  getSdk: () => {
+    const baseUrl = get().selectedVersion?.api
     if (!baseUrl) return null
-    const factory = get(sdkFactoryState)
-    return factory({ baseUrl })
+    return get().sdkFactory({ baseUrl })
   },
-})
-
-export const optionsState = selector({
-  key: 'SELECT_OPTIONS_STATE',
-  get: async ({ get }) => {
-    const sdk = get(sdkState)
-    if (!sdk) return {}
-    return await sdk.selectOptions()
-  },
-})
-
-export const optionsForState = selectorFamily({
-  key: 'SELECT_OPTIONS_FOR_STATE',
-  get:
-    (key) =>
-    ({ get }) => {
-      const opts = get(optionsState)
-      return opts[key]
-    },
-})
-
-// Start Form Fields
-export const nameState = atom({
-  key: 'NAME_STATE',
-  default: defaultValueSelectorFactory('name'),
-})
-
-export const packageState = atom({
-  key: 'PACKAGE_STATE',
-  default: defaultValueSelectorFactory('package'),
-})
-
-export const appTypeState = atom({
-  key: 'TYPE_STATE',
-  default: defaultValueSelectorFactory('type'),
-})
-
-export const reloadingState = atom({
-  key: 'RELOADING_STATE',
-  default: defaultValueSelectorFactory('reloading'),
-})
-
-export const langState = atom({
-  key: 'LANG_STATE',
-  default: defaultValueSelectorFactory('lang'),
-})
-
-export const buildState = atom({
-  key: 'BUILD_STATE',
-  default: defaultValueSelectorFactory('build'),
-})
-
-export const servletState = atom({
-  key: 'SERVLET_STATE',
-  default: defaultValueSelectorFactory('servlet'),
-})
-
-export const gormState = atom({
-  key: 'GORM_STATE',
-  default: defaultValueSelectorFactory('gorm'),
-})
-
-export const javaVersionState = atom({
-  key: 'JAVA_VERSION_STATE',
-  default: defaultValueSelectorFactory('javaVersion'),
-})
-
-export const featuresState = atom({
-  key: 'FEATURES_STATE',
-  default: defaultValueSelectorFactory('features', []),
-})
-// End Form Data
-
-export const availableFeaturesState = selector({
-  key: 'FEATURES_FOR_TYPE_STATE',
-  get: async ({ get }) => {
-    const sdk = get(sdkState)
-    const type = get(appTypeState)
-    const form = get(starterFormState)
-    if (!sdk || !type) return []
-    const { features } = await sdk.features({ type, form })
-    return features
-  },
-})
-
-export const defaultIncludedFeaturesState = selector({
-  key: 'DEFAULT_FEATURES_FOR_TYPE_STATE',
-  get: async ({ get }) => {
-    const sdk = get(sdkState)
-    const type = get(appTypeState)
-    const form = get(starterFormState)
-    if (!sdk || !form.type) return []
-    const { features } = await sdk.defaultIncludedFeatures({type, form})
-    return features
-  },
-})
-
-export const starterFormState = selector({
-  key: 'STARTER_FORM_STATE',
-  get: ({ get }) => {
-    const type = get(appTypeState)
-    const name = get(nameState)
-    const pkg = get(packageState)
-    const servlet = get(servletState)
-    const gorm = get(gormState)
-    const reloading = get(reloadingState)
-    const javaVersion = get(javaVersionState)
-    const features = get(featuresState)
-
-    // This technically causes a side effect,
-    // but done here since selectors don't support
-    // recoil effects.
+  getStarterForm: () => {
+    const { appType, name, package: pkg, servlet, gorm, reloading, javaVersion, features } = get()
     return setStorageValue(INITIAL_FORM_DATA_STORAGE_KEY, {
-      type,
+      type: appType,
       name,
       package: pkg,
       javaVersion,
@@ -197,34 +123,86 @@ export const starterFormState = selector({
       features,
     })
   },
-})
-
-export const gitHubLinkState = selector({
-  key: 'GITHUB_LINK_STATE',
-  get: ({ get }) => {
-    const form = get(starterFormState)
-    const baseUrl = get(baseUrlState)
+  getGitHubLink: () => {
+    const form = get().getStarterForm()
+    const baseUrl = get().getBaseUrl()
     return StarterSDK.githubHrefForUrl(baseUrl, form)
   },
-})
-
-export const createCommandState = selector({
-  key: 'CREATE_COMMAND_STATE',
-  get: ({ get }) => {
-    const form = get(starterFormState)
-    const baseUrl = get(baseUrlState)
+  getCreateCommand: () => {
+    const form = get().getStarterForm()
+    const baseUrl = get().getBaseUrl()
     return StarterSDK.createCommand(form, baseUrl)
   },
-})
-
-export const sharableLinkState = selector({
-  key: 'SHARABLE_LINK_STATE',
-  get: ({ get }) => {
-    const form = get(starterFormState)
-    const selectedVersion = get(selectedVersionState)
+  getSharableLink: () => {
+    const form = get().getStarterForm()
+    const selectedVersion = get().selectedVersion
     return sharableLink(form, selectedVersion?.version)
   },
-})
+
+  // Async actions
+  loadOptions: async () => {
+    const sdk = get().getSdk()
+    if (!sdk) return
+    set({ optionsLoading: true })
+    try {
+      const options = await sdk.selectOptions()
+      set({ options, optionsLoading: false })
+    } catch (_e) {
+      set({ optionsLoading: false })
+    }
+  },
+  loadAvailableFeatures: async () => {
+    const sdk = get().getSdk()
+    const appType = get().appType
+    const form = get().getStarterForm()
+    if (!sdk || !appType) {
+      set({ availableFeatures: [], availableFeaturesLoading: false })
+      return
+    }
+    set({ availableFeaturesLoading: true, availableFeaturesError: null })
+    try {
+      const { features } = await sdk.features({ type: appType, form })
+      set({ availableFeatures: features, availableFeaturesLoading: false })
+    } catch (error) {
+      set({ availableFeatures: [], availableFeaturesLoading: false, availableFeaturesError: error })
+    }
+  },
+  loadDefaultIncludedFeatures: async () => {
+    const sdk = get().getSdk()
+    const appType = get().appType
+    const form = get().getStarterForm()
+    if (!sdk || !form.type) {
+      set({ defaultIncludedFeatures: [] })
+      return
+    }
+    set({ defaultIncludedFeaturesLoading: true })
+    try {
+      const { features } = await sdk.defaultIncludedFeatures({ type: appType, form })
+      set({ defaultIncludedFeatures: features, defaultIncludedFeaturesLoading: false })
+    } catch (_e) {
+      set({ defaultIncludedFeatures: [], defaultIncludedFeaturesLoading: false })
+    }
+  },
+  resetForm: async () => {
+    const options = get().options
+    const resets = formResets({})
+    set({
+      name: resets.name,
+      package: resets.package,
+      appType: options.type?.defaultOption?.value,
+      servlet: options.servlet?.defaultOption?.value,
+      gorm: options.gorm?.defaultOption?.value,
+      reloading: options.reloading?.defaultOption?.value,
+      javaVersion: options.jdkVersion?.defaultOption?.value,
+      features: {},
+    })
+  },
+}))
+
+// Initialize the store with version data
+versionLoader.then((versions) => {
+  useAppStore.getState().setAvailableVersions(versions)
+}).catch(() => {})
 
 //----------------------
 // State Hooks
@@ -239,59 +217,83 @@ const useDerivedDefultsEffect = (select, setter) => {
       if (idx < 0) return defaultOption.value
       return value
     })
-  }, [select, setter])
+  }, [select]) // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 export function useCurrenSdk() {
-  return useRecoilValue(sdkState)
+  const baseUrl = useAppStore((s) => s.selectedVersion?.api)
+  const sdkFactory = useAppStore((s) => s.sdkFactory)
+  return useMemo(() => {
+    if (!baseUrl) return null
+    return sdkFactory({ baseUrl })
+  }, [baseUrl, sdkFactory])
 }
 
 export function useInitialData() {
-  return useRecoilValue(initialValueState)
+  return useAppStore((s) => s.initialValues)
 }
 
 export function useGitHubShareLink() {
-  return useRecoilValue(gitHubLinkState)
+  const selectedVersion = useAppStore((s) => s.selectedVersion)
+  const appType = useAppStore((s) => s.appType)
+  const name = useAppStore((s) => s.name)
+  const pkg = useAppStore((s) => s.package)
+  const servlet = useAppStore((s) => s.servlet)
+  const gorm = useAppStore((s) => s.gorm)
+  const reloading = useAppStore((s) => s.reloading)
+  const javaVersion = useAppStore((s) => s.javaVersion)
+  const features = useAppStore((s) => s.features)
+  return useMemo(() => {
+    const form = setStorageValue(INITIAL_FORM_DATA_STORAGE_KEY, {
+      type: appType, name, package: pkg, javaVersion, gorm, servlet, reloading, features,
+    })
+    const baseUrl = selectedVersion?.api
+    return StarterSDK.githubHrefForUrl(baseUrl, form)
+  }, [selectedVersion, appType, name, pkg, servlet, gorm, reloading, javaVersion, features])
 }
 
 export function useSharableLink() {
-  return useRecoilValue(sharableLinkState)
+  const selectedVersion = useAppStore((s) => s.selectedVersion)
+  const appType = useAppStore((s) => s.appType)
+  const name = useAppStore((s) => s.name)
+  const pkg = useAppStore((s) => s.package)
+  const servlet = useAppStore((s) => s.servlet)
+  const gorm = useAppStore((s) => s.gorm)
+  const reloading = useAppStore((s) => s.reloading)
+  const javaVersion = useAppStore((s) => s.javaVersion)
+  const features = useAppStore((s) => s.features)
+  return useMemo(() => {
+    const form = setStorageValue(INITIAL_FORM_DATA_STORAGE_KEY, {
+      type: appType, name, package: pkg, javaVersion, gorm, servlet, reloading, features,
+    })
+    return sharableLink(form, selectedVersion?.version)
+  }, [selectedVersion, appType, name, pkg, servlet, gorm, reloading, javaVersion, features])
 }
 
 export function useAvailableVersions() {
-  return useRecoilValue(availableVersionsState)
+  return useAppStore((s) => s.availableVersions)
 }
 
 export function useAvailableFeatures() {
-  const loadable = useRecoilValueLoadable(availableFeaturesState)
-  switch (loadable.state) {
-    case 'hasValue':
-      return { features: loadable.contents, loading: false, error: null }
-    case 'loading':
-      return { features: [], loading: true, error: null }
-    default:
-      return { features: [], loading: false, error: loadable.contents }
-  }
+  const features = useAppStore((s) => s.availableFeatures)
+  const loading = useAppStore((s) => s.availableFeaturesLoading)
+  const error = useAppStore((s) => s.availableFeaturesError)
+  return { features, loading, error }
 }
 
 export function useDefaultIncludedFeatures() {
-  const loadable = useRecoilValueLoadable(defaultIncludedFeaturesState)
-  switch (loadable.state) {
-    case 'hasValue':
-      return { features: loadable.contents, loading: false, error: null }
-    case 'loading':
-      return { features: [], loading: true, error: null }
-    default:
-      return { features: [], loading: false, error: loadable.contents }
-  }
+  const features = useAppStore((s) => s.defaultIncludedFeatures)
+  const loading = useAppStore((s) => s.defaultIncludedFeaturesLoading)
+  return { features, loading, error: null }
 }
 
 export function useSelectedVersions() {
-  const [value, setter] = useRecoilState(selectedVersionState)
-  const defaultVersion = useRecoilValue(initialValueState).version
+  const value = useAppStore((s) => s.selectedVersion)
+  const setter = useAppStore((s) => s.setSelectedVersion)
+  const defaultVersion = useAppStore((s) => s.initialValues.version)
   const options = useAvailableVersions()
   useEffect(() => {
-    if (!value) {
+    if (!value && options?.length) {
       let idx = Math.max(
         0,
         options.findIndex((opt) => opt.version === defaultVersion)
@@ -303,9 +305,10 @@ export function useSelectedVersions() {
 }
 
 export function useConfigureInitialVersionEffect(onError) {
-  const [value, setter] = useRecoilState(selectedVersionState)
+  const value = useAppStore((s) => s.selectedVersion)
+  const setter = useAppStore((s) => s.setSelectedVersion)
   const options = useAvailableVersions()
-  const { version: defaultVersion } = useRecoilValue(initialValueState)
+  const defaultVersion = useAppStore((s) => s.initialValues.version)
 
   return useEffect(() => {
     if (!value && options?.length) {
@@ -319,33 +322,34 @@ export function useConfigureInitialVersionEffect(onError) {
 }
 
 export function useSelectedFeatures() {
-  const [value, setter] = useRecoilState(featuresState)
+  const value = useAppStore((s) => s.features)
+  const setter = useAppStore((s) => s.setFeatures)
   const { features, loading } = useAvailableFeatures()
   return [value, setter, features, loading]
 }
 
 export function useSelectedFeaturesValue() {
-  return useRecoilValue(featuresState)
+  return useAppStore((s) => s.features)
 }
 
 export function useDefaultIncludedFeaturesValue() {
-  return useRecoilValue(defaultIncludedFeaturesState)
+  return useAppStore((s) => s.defaultIncludedFeatures)
 }
 
 export function useSelectedFeaturesHandlers() {
-  const setFeatures = useSetRecoilState(featuresState)
+  const setFeatures = useAppStore((s) => s.setFeatures)
   return useMemo(() => {
     const onAddFeature = (feature) => {
-      setFeatures(({ ...draft }) => {
-        draft[feature.name] = feature
-        return draft
+      setFeatures((draft) => {
+        return { ...draft, [feature.name]: feature }
       })
     }
 
     const onRemoveFeature = (feature) => {
-      setFeatures(({ ...draft }) => {
-        delete draft[feature.name]
-        return draft
+      setFeatures((draft) => {
+        const next = { ...draft }
+        delete next[feature.name]
+        return next
       })
     }
 
@@ -356,43 +360,49 @@ export function useSelectedFeaturesHandlers() {
   }, [setFeatures])
 }
 
-export const useAppName = () => useRecoilState(nameState)
-export const useAppPackage = () => useRecoilState(packageState)
+export const useAppName = () => {
+  const value = useAppStore((s) => s.name)
+  const setter = useAppStore((s) => s.setName)
+  return [value, setter]
+}
+
+export const useAppPackage = () => {
+  const value = useAppStore((s) => s.package)
+  const setter = useAppStore((s) => s.setPackage)
+  return [value, setter]
+}
 
 const useSelectOptionsForType = (key) => {
-  const loadable = useRecoilValueLoadable(optionsForState(key))
-  switch (loadable.state) {
-    case 'hasValue':
-      return loadable.contents
-    default:
-      return null
-  }
+  const options = useAppStore((s) => s.options)
+  return options[key] || null
 }
 
 export const useApplicationType = () => {
-  const [value, setter] = useRecoilState(appTypeState)
+  const value = useAppStore((s) => s.appType)
+  const setter = useAppStore((s) => s.setAppType)
   const select = useSelectOptionsForType('type')
   useDerivedDefultsEffect(select, setter)
   return [value, setter, select]
 }
 
 export const useReloadingFramework = () => {
-  const [value, setter] = useRecoilState(reloadingState)
+  const value = useAppStore((s) => s.reloading)
+  const setter = useAppStore((s) => s.setReloading)
   const defaultSelect = {
-      "options": [
-          {
-              "name": "devtools",
-              "description": "Spring Dev Tools",
-              "value": "DEVTOOLS",
-              "label": "Spring Boot Dev Tools"
-          }
-      ],
-      "defaultOption": {
-          "name": "devtools",
-          "description": "Spring Dev Tools",
-          "value": "DEVTOOLS",
-          "label": "Spring Boot Dev Tools"
+    "options": [
+      {
+        "name": "devtools",
+        "description": "Spring Dev Tools",
+        "value": "DEVTOOLS",
+        "label": "Spring Boot Dev Tools"
       }
+    ],
+    "defaultOption": {
+      "name": "devtools",
+      "description": "Spring Dev Tools",
+      "value": "DEVTOOLS",
+      "label": "Spring Boot Dev Tools"
+    }
   }
   const select = useSelectOptionsForType('reloading') ?? defaultSelect
   useDerivedDefultsEffect(select, setter)
@@ -400,69 +410,101 @@ export const useReloadingFramework = () => {
 }
 
 export const useLanguage = () => {
-  const [value, setter] = useRecoilState(langState)
+  const value = useAppStore((s) => s.lang)
+  const setter = useAppStore((s) => s.setLang)
   const select = useSelectOptionsForType('lang')
   useDerivedDefultsEffect(select, setter)
   return [value, setter, select]
 }
 
 export const useBuild = () => {
-  const [value, setter] = useRecoilState(buildState)
+  const value = useAppStore((s) => s.build)
+  const setter = useAppStore((s) => s.setBuild)
   const select = useSelectOptionsForType('build')
   useDerivedDefultsEffect(select, setter)
   return [value, setter, select]
 }
 
 export const useServlet = () => {
-  const [value, setter] = useRecoilState(servletState)
+  const value = useAppStore((s) => s.servlet)
+  const setter = useAppStore((s) => s.setServlet)
   const select = useSelectOptionsForType('servlet')
   useDerivedDefultsEffect(select, setter)
   return [value, setter, select]
 }
 
 export const useGorm = () => {
-  const [value, setter] = useRecoilState(gormState)
+  const value = useAppStore((s) => s.gorm)
+  const setter = useAppStore((s) => s.setGorm)
   const select = useSelectOptionsForType('gorm')
   useDerivedDefultsEffect(select, setter)
   return [value, setter, select]
 }
 
 export const useJavaVersion = () => {
-  const [value, setter] = useRecoilState(javaVersionState)
+  const value = useAppStore((s) => s.javaVersion)
+  const setter = useAppStore((s) => s.setJavaVersion)
   const select = useSelectOptionsForType('jdkVersion')
   useDerivedDefultsEffect(select, setter)
   return [value, setter, select]
 }
 
 export const useStarterForm = () => {
-  return useRecoilValue(starterFormState)
+  const appType = useAppStore((s) => s.appType)
+  const name = useAppStore((s) => s.name)
+  const pkg = useAppStore((s) => s.package)
+  const servlet = useAppStore((s) => s.servlet)
+  const gorm = useAppStore((s) => s.gorm)
+  const reloading = useAppStore((s) => s.reloading)
+  const javaVersion = useAppStore((s) => s.javaVersion)
+  const features = useAppStore((s) => s.features)
+  return useMemo(() => {
+    return setStorageValue(INITIAL_FORM_DATA_STORAGE_KEY, {
+      type: appType, name, package: pkg, javaVersion, gorm, servlet, reloading, features,
+    })
+  }, [appType, name, pkg, javaVersion, gorm, servlet, reloading, features])
 }
 
 export const useCreateCommand = () => {
-  return useRecoilValue(createCommandState)
+  const form = useStarterForm()
+  const baseUrl = useAppStore((s) => s.selectedVersion?.api)
+  return useMemo(() => StarterSDK.createCommand(form, baseUrl), [form, baseUrl])
 }
 
 export const useGetStarterForm = () => {
-  return useRecoilCallback(({ snapshot }) => async () => {
-    const createPayload = await snapshot.getPromise(starterFormState)
-    const sdk = await snapshot.getPromise(sdkState)
+  return async () => {
+    const state = useAppStore.getState()
+    const createPayload = state.getStarterForm()
+    const sdk = state.getSdk()
     return { createPayload, sdk }
-  })
+  }
 }
 
 export const useResetStarterForm = () => {
-  return useRecoilCallback(({ set, snapshot }) => async () => {
-    const options = await snapshot.getPromise(optionsState)
-    const resets = formResets({})
+  return () => useAppStore.getState().resetForm()
+}
 
-    set(nameState, resets.name)
-    set(packageState, resets.package)
+// Load options when version changes
+export function useLoadOptionsEffect() {
+  const selectedVersion = useAppStore((s) => s.selectedVersion)
+  const loadOptions = useAppStore((s) => s.loadOptions)
+  useEffect(() => {
+    if (selectedVersion?.api) {
+      loadOptions()
+    }
+  }, [selectedVersion, loadOptions])
+}
 
-    set(appTypeState, options.type.defaultOption.value)
-    set(servletState, options.servlet.defaultOption.value)
-    set(gormState, options.gorm.defaultOption.value)
-    set(reloadingState, options.reloading.defaultOption.value)
-    set(javaVersionState, options.jdkVersion.defaultOption.value)
-    set(featuresState, {})
-  })
+// Load features when app type or form changes
+export function useLoadFeaturesEffect() {
+  const appType = useAppStore((s) => s.appType)
+  const selectedVersion = useAppStore((s) => s.selectedVersion)
+  const loadAvailableFeatures = useAppStore((s) => s.loadAvailableFeatures)
+  const loadDefaultIncludedFeatures = useAppStore((s) => s.loadDefaultIncludedFeatures)
+  useEffect(() => {
+    if (appType && selectedVersion) {
+      loadAvailableFeatures()
+      loadDefaultIncludedFeatures()
+    }
+  }, [appType, selectedVersion, loadAvailableFeatures, loadDefaultIncludedFeatures])
 }

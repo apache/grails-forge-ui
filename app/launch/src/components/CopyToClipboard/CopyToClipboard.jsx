@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import AssignmentIcon from '@material-ui/icons/Assignment'
-import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
+import AssignmentIcon from '@mui/icons-material/Assignment'
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn'
 
 import { copyToClipboard } from '../../utility'
 

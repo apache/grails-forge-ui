@@ -10,7 +10,7 @@ function startVersionServer(feed, port = 8088) {
   const localhost = toLocalUrl(port);
   const app = express();
   app.use(cors());
-  app.get("*", (req, res) => res.json(feed));
+  app.get("/*splat", (req, res) => res.json(feed));
   app.listen(port, () => {
     console.log(`Started version server on: ${localhost}`);
     console.table(feed.versions);

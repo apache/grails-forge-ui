@@ -6,8 +6,8 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-} from '@material-ui/core'
-import Icon from '@material-ui/core/Icon'
+  Icon,
+} from '@mui/material'
 import { useStarterForm } from '../../state/store'
 import { guessOs, osOpts, OS_WINDOWS, OS_NIX } from '../../utility'
 import CopyToClipboard from '../CopyToClipboard'
@@ -94,8 +94,8 @@ const NextSteps = ({ info, theme = 'light', onClose, onStartOver }) => {
           <div className="next-steps-wrapper">
             <h5 className="heading">View your new repo on GitHub</h5>
             <Grid container className="next-steps-row">
-              <Grid item className="text">{htmlUrl}</Grid>
-              <Grid item className="icon">
+              <Grid className="text">{htmlUrl}</Grid>
+              <Grid className="icon">
                 <a target="_blank" rel="noopener noreferrer" href={htmlUrl}>
                   <Icon>link</Icon>
                 </a>
@@ -109,8 +109,8 @@ const NextSteps = ({ info, theme = 'light', onClose, onStartOver }) => {
             <h5 className="heading">{unpackCommand.action}</h5>
             {unpackCommand.cmd[os] && (
               <Grid container className="next-steps-row">
-                <Grid item className="text">{unpackCommand.cmd[os]}</Grid>
-                <Grid item className="icon">
+                <Grid className="text">{unpackCommand.cmd[os]}</Grid>
+                <Grid className="icon">
                   <CopyToClipboard value={unpackCommand.cmd[os]} />
                 </Grid>
               </Grid>
@@ -121,8 +121,8 @@ const NextSteps = ({ info, theme = 'light', onClose, onStartOver }) => {
         <div className="next-steps-wrapper">
           <h5 className="heading">cd into the project</h5>
           <Grid container className="next-steps-row">
-            <Grid item className="text">{cdCommand.cmd[os]}</Grid>
-            <Grid item className="icon">
+            <Grid className="text">{cdCommand.cmd[os]}</Grid>
+            <Grid className="icon">
               <CopyToClipboard value={cdCommand.cmd[os]} />
             </Grid>
           </Grid>
@@ -131,8 +131,8 @@ const NextSteps = ({ info, theme = 'light', onClose, onStartOver }) => {
         <div className="next-steps-wrapper">
           <h5 className="heading">{launchCommand.action}</h5>
           <Grid container className="next-steps-row">
-            <Grid item className="text">{launchCommand.cmd[os]}</Grid>
-            <Grid item className="icon">
+            <Grid className="text">{launchCommand.cmd[os]}</Grid>
+            <Grid className="icon">
               <CopyToClipboard value={launchCommand.cmd[os]} />
             </Grid>
           </Grid>

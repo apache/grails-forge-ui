@@ -1,6 +1,6 @@
 // TextInput.js
 import React, { forwardRef } from 'react'
-import TextField from '@material-ui/core/TextField'
+import TextField from '@mui/material/TextField'
 
 const TextInput = ({ onChangeText, label, placeholder, className, id, name, _s, autoComplete, value, ...rest }, ref) => {
   const onChange = (event) => {
@@ -26,7 +26,7 @@ const TextInput = ({ onChangeText, label, placeholder, className, id, name, _s, 
       onChange={onChange}
       fullWidth
       variant="standard"
-      InputLabelProps={{ shrink: true }}
+      slotProps={{ inputLabel: { shrink: true } }}
     />
   )
 }

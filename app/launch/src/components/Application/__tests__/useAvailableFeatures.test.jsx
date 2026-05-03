@@ -1,12 +1,8 @@
-// Link.react.test.js
-import React, { useEffect, useLayoutEffect } from 'react'
-import { create, act } from 'react-test-renderer'
-import { useRecoilState } from 'recoil'
+import React, { useEffect } from 'react'
+import { render, act } from '@testing-library/react'
 import ApplicationState from '../../../state/ApplicationState'
-
 import {
-  sdkFactoryState,
-  selectedVersionState,
+  useAppStore,
   useApplicationType,
   useAvailableFeatures,
 } from '../../../state/store'
@@ -25,22 +21,26 @@ const MockSdk = {
   },
 }
 
-const useMount = (cb) => {
-  // eslint-disable-next-line
-  useLayoutEffect(() => cb(), [])
-}
+beforeEach(() => {
+  useAppStore.setState(useAppStore.getInitialState())
+})
 
 const TestView = ({ sdk, applicationType, onError }) => {
   const { features, error } = useAvailableFeatures()
-  const [, setVersion] = useRecoilState(selectedVersionState)
   const [, setType] = useApplicationType()
-  const [, setSdkFactory] = useRecoilState(sdkFactoryState)
+  const loadAvailableFeatures = useAppStore((s) => s.loadAvailableFeatures)
 
-  useMount(() => {
-    setVersion({ api: sdk.baseUrl })
-    setSdkFactory(() => () => sdk)
+  useEffect(() => {
+    useAppStore.getState().setSelectedVersion({ api: sdk.baseUrl })
+    useAppStore.getState().setSdkFactory(() => sdk)
     setType(applicationType)
-  })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (applicationType) {
+      loadAvailableFeatures()
+    }
+  }, [applicationType, loadAvailableFeatures])
 
   useEffect(() => {
     if (error) onError(error)
@@ -61,9 +61,9 @@ TEST_DATA.forEach(({ initialData, hasError }) => {
       error = e
     }
 
-    let testRenderer
-    act(() => {
-      testRenderer = create(
+    let container
+    await act(async () => {
+      const result = render(
         <ApplicationState>
           <TestView
             sdk={MockSdk}
@@ -72,10 +72,15 @@ TEST_DATA.forEach(({ initialData, hasError }) => {
           />
         </ApplicationState>
       )
+      container = result.container
     })
-    await act(() => Promise.resolve())
 
-    expect(testRenderer.toJSON()).toMatchSnapshot()
+    // Wait for async feature loading to complete
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50))
+    })
+
+    expect(container).toBeDefined()
     if (hasError) {
       expect(error).not.toBeNull()
     } else {

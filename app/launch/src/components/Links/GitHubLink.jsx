@@ -1,6 +1,6 @@
 // GitHubLink.js
 import React from 'react'
-import GitHubIcon from '@material-ui/icons/GitHub'
+import GitHubIcon from '@mui/icons-material/GitHub'
 
 export const GitHubLink = ({ className, theme }) => {
   const backgroundColor = theme === 'dark' ? 'var(--theme-dark)' : 'white'

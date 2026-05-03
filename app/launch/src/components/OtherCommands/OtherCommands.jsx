@@ -7,7 +7,7 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-} from '@material-ui/core'
+} from '@mui/material'
 import { useCreateCommand } from '../../state/store'
 import CopyToClipboard from '../CopyToClipboard'
 
@@ -47,8 +47,8 @@ export default function OtherCommands({ theme, trigger }) {
               <div key={action.link} className="next-steps-wrapper">
                 <h6 className="heading">{action.title}</h6>
                 <Grid container className="next-steps-row multi-line">
-                  <Grid item className="text">{action.link}</Grid>
-                  <Grid item className="icon">
+                  <Grid className="text">{action.link}</Grid>
+                  <Grid className="icon">
                     <CopyToClipboard value={action.link} />
                   </Grid>
                 </Grid>

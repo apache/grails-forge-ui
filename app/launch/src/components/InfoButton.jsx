@@ -7,8 +7,8 @@ import {
   DialogContent,
   DialogTitle,
   Fab,
-} from '@material-ui/core'
-import Icon from '@material-ui/core/Icon'
+  Icon,
+} from '@mui/material'
 import { HELP_SHORTCUT, SHORTCUT_REGISTRY } from '../constants/shortcuts'
 import useKeyboardShortcuts from '../hooks/useKeyboardShortcuts'
 
