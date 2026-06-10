@@ -28,13 +28,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - name: "🧪 Direct npm ci (diagnostic)"
-        run: |
-          node --version
-          npm --version
-          cd ./app/launch/
-          npm ci
-          rm -rf node_modules
       - name: "🔨 Build project"
         id: build
         run: ./gradlew build
