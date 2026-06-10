@@ -42,7 +42,6 @@ jobs:
         if: failure()
         run: tail -n 300 /home/runner/.npm/_logs/*.log
       - name: Verify Run
-        if: steps.build.outcome == 'success' && github.event_name == 'push'
         run: |
           cd ./app/launch/
           npm test
