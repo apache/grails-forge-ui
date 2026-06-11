@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { initializeStateFactory } from './factories/initializeState'
 import { useAppStore } from './store'
 
@@ -8,6 +8,7 @@ export default function ApplicationState({
   children,
 }) {
   const initialized = useRef(false)
+  const [ready, setReady] = useState(false)
 
   useLayoutEffect(() => {
     if (initialized.current) return
@@ -20,7 +21,9 @@ export default function ApplicationState({
     if (typeof initializer === 'function') {
       initializer(useAppStore)
     }
+
+    setReady(true)
   }, [initialData, stateInitializer])
 
-  return <>{children}</>
+  return ready ? <>{children}</> : null
 }
