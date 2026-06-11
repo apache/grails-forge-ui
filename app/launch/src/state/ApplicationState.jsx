@@ -1,22 +1,26 @@
-import { useEffect } from 'react'
-import { useAppStore } from './store'
+import { useLayoutEffect, useRef } from 'react'
 import { initializeStateFactory } from './factories/initializeState'
+import { useAppStore } from './store'
 
 export default function ApplicationState({
-  initialData,
+  initialData = {},
   stateInitializer,
   children,
 }) {
-  useEffect(() => {
+  const initialized = useRef(false)
+
+  useLayoutEffect(() => {
+    if (initialized.current) return
+
+    initialized.current = true
     const initializer = typeof stateInitializer === 'function'
       ? stateInitializer
       : initializeStateFactory(initialData)
 
-    // Apply initial state to the store
     if (typeof initializer === 'function') {
       initializer(useAppStore)
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [initialData, stateInitializer])
 
   return <>{children}</>
 }

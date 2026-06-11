@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { create } from 'zustand'
 
 import { sharableLink } from '../helpers/Routing'
@@ -10,6 +10,17 @@ import { loadVersions } from './factories/versionLoader'
 const INITIAL_FORM_DATA_STORAGE_KEY = 'INITIAL_FORM_DATA'
 
 const versionLoader = loadVersions()
+
+const optionsRequestKey = (state) => state.getBaseUrl()
+
+const featuresRequestKey = (state) => JSON.stringify({
+  baseUrl: state.getBaseUrl(),
+  appType: state.appType,
+  javaVersion: state.javaVersion,
+  servlet: state.servlet,
+  gorm: state.gorm,
+  reloading: state.reloading,
+})
 
 // Main application store
 export const useAppStore = create((set, get) => ({
@@ -38,13 +49,16 @@ export const useAppStore = create((set, get) => ({
   // Options (loaded from API)
   options: {},
   optionsLoading: false,
+  optionsRequestId: 0,
 
   // Features
   availableFeatures: [],
   availableFeaturesLoading: false,
   availableFeaturesError: null,
+  availableFeaturesRequestId: 0,
   defaultIncludedFeatures: [],
   defaultIncludedFeaturesLoading: false,
+  defaultIncludedFeaturesRequestId: 0,
 
   // Actions
   setInitialValues: (values) => set({ initialValues: values }),
@@ -143,12 +157,18 @@ export const useAppStore = create((set, get) => ({
   loadOptions: async () => {
     const sdk = get().getSdk()
     if (!sdk) return
-    set({ optionsLoading: true })
+    const requestId = get().optionsRequestId + 1
+    const requestKey = optionsRequestKey(get())
+    set({ optionsLoading: true, optionsRequestId: requestId })
     try {
       const options = await sdk.selectOptions()
-      set({ options, optionsLoading: false })
-    } catch (_e) {
-      set({ optionsLoading: false })
+      if (get().optionsRequestId === requestId && optionsRequestKey(get()) === requestKey) {
+        set({ options, optionsLoading: false })
+      }
+    } catch {
+      if (get().optionsRequestId === requestId && optionsRequestKey(get()) === requestKey) {
+        set({ optionsLoading: false })
+      }
     }
   },
   loadAvailableFeatures: async () => {
@@ -159,41 +179,70 @@ export const useAppStore = create((set, get) => ({
       set({ availableFeatures: [], availableFeaturesLoading: false })
       return
     }
-    set({ availableFeaturesLoading: true, availableFeaturesError: null })
+    const requestId = get().availableFeaturesRequestId + 1
+    const requestKey = featuresRequestKey(get())
+    set({
+      availableFeaturesLoading: true,
+      availableFeaturesError: null,
+      availableFeaturesRequestId: requestId,
+    })
     try {
       const { features } = await sdk.features({ type: appType, form })
-      set({ availableFeatures: features, availableFeaturesLoading: false })
+      if (get().availableFeaturesRequestId === requestId && featuresRequestKey(get()) === requestKey) {
+        set({ availableFeatures: features, availableFeaturesLoading: false })
+      }
     } catch (error) {
-      set({ availableFeatures: [], availableFeaturesLoading: false, availableFeaturesError: error })
+      if (get().availableFeaturesRequestId === requestId && featuresRequestKey(get()) === requestKey) {
+        set({ availableFeatures: [], availableFeaturesLoading: false, availableFeaturesError: error })
+      }
     }
   },
   loadDefaultIncludedFeatures: async () => {
     const sdk = get().getSdk()
     const appType = get().appType
     const form = get().getStarterForm()
-    if (!sdk || !form.type) {
+    if (!sdk || !appType) {
       set({ defaultIncludedFeatures: [] })
       return
     }
-    set({ defaultIncludedFeaturesLoading: true })
+    const requestId = get().defaultIncludedFeaturesRequestId + 1
+    const requestKey = featuresRequestKey(get())
+    set({
+      defaultIncludedFeaturesLoading: true,
+      defaultIncludedFeaturesRequestId: requestId,
+    })
     try {
       const { features } = await sdk.defaultIncludedFeatures({ type: appType, form })
-      set({ defaultIncludedFeatures: features, defaultIncludedFeaturesLoading: false })
-    } catch (_e) {
-      set({ defaultIncludedFeatures: [], defaultIncludedFeaturesLoading: false })
+      if (get().defaultIncludedFeaturesRequestId === requestId && featuresRequestKey(get()) === requestKey) {
+        set({ defaultIncludedFeatures: features, defaultIncludedFeaturesLoading: false })
+      }
+    } catch {
+      if (get().defaultIncludedFeaturesRequestId === requestId && featuresRequestKey(get()) === requestKey) {
+        set({ defaultIncludedFeatures: [], defaultIncludedFeaturesLoading: false })
+      }
     }
   },
   resetForm: async () => {
-    const options = get().options
+    let options = get().options
+    if (!options.type) {
+      await get().loadOptions()
+      options = get().options
+    }
+    const state = get()
+    const appType = options.type?.defaultOption?.value ?? state.appType
+    if (!appType) return
+    const optionDefault = (key, fallback) =>
+      options[key]?.defaultOption?.value ?? fallback
+
     const resets = formResets({})
     set({
       name: resets.name,
       package: resets.package,
-      appType: options.type?.defaultOption?.value,
-      servlet: options.servlet?.defaultOption?.value,
-      gorm: options.gorm?.defaultOption?.value,
-      reloading: options.reloading?.defaultOption?.value,
-      javaVersion: options.jdkVersion?.defaultOption?.value,
+      appType,
+      servlet: optionDefault('servlet', state.servlet),
+      gorm: optionDefault('gorm', state.gorm),
+      reloading: optionDefault('reloading', state.reloading),
+      javaVersion: optionDefault('jdkVersion', state.javaVersion),
       features: {},
     })
   },
@@ -481,7 +530,7 @@ export const useGetStarterForm = () => {
 }
 
 export const useResetStarterForm = () => {
-  return () => useAppStore.getState().resetForm()
+  return useCallback(() => useAppStore.getState().resetForm(), [])
 }
 
 // Load options when version changes
@@ -499,6 +548,10 @@ export function useLoadOptionsEffect() {
 export function useLoadFeaturesEffect() {
   const appType = useAppStore((s) => s.appType)
   const selectedVersion = useAppStore((s) => s.selectedVersion)
+  const javaVersion = useAppStore((s) => s.javaVersion)
+  const servlet = useAppStore((s) => s.servlet)
+  const gorm = useAppStore((s) => s.gorm)
+  const reloading = useAppStore((s) => s.reloading)
   const loadAvailableFeatures = useAppStore((s) => s.loadAvailableFeatures)
   const loadDefaultIncludedFeatures = useAppStore((s) => s.loadDefaultIncludedFeatures)
   useEffect(() => {
@@ -506,5 +559,14 @@ export function useLoadFeaturesEffect() {
       loadAvailableFeatures()
       loadDefaultIncludedFeatures()
     }
-  }, [appType, selectedVersion, loadAvailableFeatures, loadDefaultIncludedFeatures])
+  }, [
+    appType,
+    selectedVersion,
+    javaVersion,
+    servlet,
+    gorm,
+    reloading,
+    loadAvailableFeatures,
+    loadDefaultIncludedFeatures,
+  ])
 }
