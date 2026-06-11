@@ -1,9 +1,8 @@
 // ErrorView.js
 import React, { useState } from 'react'
-import { Avatar, Snackbar, Alert } from '@mui/material'
-
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn'
+import { Alert, Avatar, Snackbar } from '@mui/material'
 
 import logo from '../../images/grails-white-icon.png'
 import { copyToClipboard } from '../../utility'
