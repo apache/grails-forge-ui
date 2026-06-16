@@ -14,17 +14,20 @@ const Select = ({
   onChange,
   tabIndex = '0',
 }) => {
+  const controlId = id ?? name
+
   return (
     <div className="MuiFormControlOverrides select-wrapper input-field col">
-      <FormControl>
-        <InputLabel id={id}>{label}</InputLabel>
+      <FormControl variant="standard">
+        <InputLabel id={`${controlId}-select-label`}>{label}</InputLabel>
         <SelectProxy
           name={name}
-          labelId={`${id}-select-label`}
-          id={`${id}-select`}
-          value={value}
+          labelId={`${controlId}-select-label`}
+          id={`${controlId}-select`}
+          value={value ?? ''}
           onChange={onChange}
           tabIndex={tabIndex}
+          variant="standard"
         >
           {options.map((opt, idx) => (
             <MenuItem key={`select-${opt.value}-${idx}`} value={opt.value}>

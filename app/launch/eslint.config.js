@@ -1,15 +1,17 @@
 import js from '@eslint/js'
 import globals from 'globals'
-import reactPlugin from 'eslint-plugin-react'
 import importPlugin from 'eslint-plugin-import'
+import reactHooksPlugin from 'eslint-plugin-react-hooks'
+import reactPlugin from 'eslint-plugin-react'
 
 export default [
   js.configs.recommended,
   {
     files: ['**/*.{js,jsx}'],
     plugins: {
-      react: reactPlugin,
       import: importPlugin,
+      react: reactPlugin,
+      'react-hooks': reactHooksPlugin,
     },
     languageOptions: {
       ecmaVersion: 'latest',
@@ -30,9 +32,11 @@ export default [
       ...reactPlugin.configs.recommended.rules,
       // React 17+ automatic JSX transform does not require React in scope
       'react/react-in-jsx-scope': 'off',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
       // Project does not use PropTypes
       'react/prop-types': 'off',
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrors: 'none' }],
       'no-case-declarations': 'warn',
       'import/order': [
         'error',

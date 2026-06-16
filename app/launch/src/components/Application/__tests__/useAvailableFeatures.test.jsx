@@ -19,6 +19,13 @@ const MockSdk = {
     }
     return types
   },
+  defaultIncludedFeatures: async ({ type }) => {
+    const types = MockTypes[type]
+    if (!types) {
+      throw new Error('Invalid Type')
+    }
+    return { features: [] }
+  },
 }
 
 beforeEach(() => {
@@ -80,11 +87,16 @@ TEST_DATA.forEach(({ initialData, hasError }) => {
       await new Promise((r) => setTimeout(r, 50))
     })
 
-    expect(container).toBeDefined()
     if (hasError) {
       expect(error).not.toBeNull()
+      expect(container.querySelector('.reloading').textContent).toEqual('[]')
     } else {
       expect(error).toBeNull()
+      expect(JSON.parse(container.querySelector('.reloading').textContent)).toEqual([
+        'a',
+        'b',
+        'c',
+      ])
     }
   })
 })

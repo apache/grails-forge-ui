@@ -1,5 +1,5 @@
 // FeatureSelector.js
-import React, { useCallback, useMemo, useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 
 import {
   Button,
@@ -118,8 +118,8 @@ export const FeatureSelectorModal = ({ theme = 'light' }) => {
     }, 300)
   }
 
-  const handleKeyDown = useCallback(
-    keyboardHandler.createKeyDownHandler(() => contentRef.current),
+  const handleKeyDown = useMemo(
+    () => keyboardHandler.createKeyDownHandler(() => contentRef.current),
     []
   )
 

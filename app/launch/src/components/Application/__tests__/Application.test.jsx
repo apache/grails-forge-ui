@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from '@testing-library/react'
-import { useAppStore } from '../../../state/store'
 import ApplicationState from '../../../state/ApplicationState'
+import { useAppStore } from '../../../state/store'
 
 import { App } from '../App'
 
@@ -15,5 +15,7 @@ it(`Application Launches`, () => {
       <App />
     </ApplicationState>
   )
-  expect(container).toBeDefined()
+
+  expect(container.querySelector('.mn-starter-form-main')).not.toBeNull()
+  expect(container.querySelector('.button-row')).not.toBeNull()
 })

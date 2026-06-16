@@ -2,6 +2,7 @@
     "name": "app",
     "version": "0.1.1",
     "private": true,
+    "type": "module",
     "homepage": ".",
     "dependencies": {
         "@emotion/react": "^11.14.0",
@@ -22,8 +23,10 @@
         "@testing-library/react": "^16.3.2",
         "@vitejs/plugin-react": "^6.0.1",
         "baseline-browser-mapping": "^2.10.0",
+        "cross-env": "^10.1.0",
         "eslint": "^9.39.4",
         "eslint-plugin-import": "^2.32.0",
+        "eslint-plugin-react-hooks": "^7.0.1",
         "eslint-plugin-react": "^7.37.5",
         "globals": "^17.6.0",
         "jsdom": "^29.1.1",
@@ -34,12 +37,12 @@
     },
     "scripts": {
         "start": "vite",
-        "start:local": "VITE_VERSION_FEED='http://localhost:8088' vite",
+        "start:local": "cross-env VITE_VERSION_FEED=http://localhost:8088/grails-version-feed.json vite",
         "build": "vite build",
         "preview": "vite preview",
         "format": "prettier --write \"**/*.+(js|jsx|json|css|md)\"",
-        "lint": "eslint './src/**/*.{js,jsx}'",
-        "lint:fix": "eslint './src/**/*.{js,jsx}' --fix",
+        "lint": "eslint \"./src/**/*.{js,jsx}\"",
+        "lint:fix": "eslint \"./src/**/*.{js,jsx}\" --fix",
         "test": "vitest run"
     },
     "browserslist": {
