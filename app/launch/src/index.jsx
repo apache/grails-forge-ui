@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Root } from './components/Application/App'
 
 import '@materializecss/materialize/dist/css/materialize.min.css'
@@ -12,7 +12,5 @@ import './styles/modal-overrides.css'
 import './styles/font-overrides.css'
 import './styles/z-index-overrides.css'
 
-ReactDOM.render(
-  React.createElement(Root),
-  document.getElementById('root')
-)
+const root = createRoot(document.getElementById('root'))
+root.render(React.createElement(Root))

@@ -1,16 +1,29 @@
-import { useMemo } from 'react'
-import { RecoilRoot } from 'recoil'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { initializeStateFactory } from './factories/initializeState'
+import { useAppStore } from './store'
 
 export default function ApplicationState({
-  initialData,
+  initialData = {},
   stateInitializer,
   children,
 }) {
-  const initializeState = useMemo(() => {
-    if (typeof stateInitializer === 'function') return stateInitializer
-    return initializeStateFactory(initialData)
+  const initialized = useRef(false)
+  const [ready, setReady] = useState(false)
+
+  useLayoutEffect(() => {
+    if (initialized.current) return
+
+    initialized.current = true
+    const initializer = typeof stateInitializer === 'function'
+      ? stateInitializer
+      : initializeStateFactory(initialData)
+
+    if (typeof initializer === 'function') {
+      initializer(useAppStore)
+    }
+
+    setReady(true)
   }, [initialData, stateInitializer])
 
-  return <RecoilRoot initializeState={initializeState}>{children}</RecoilRoot>
+  return ready ? <>{children}</> : null
 }

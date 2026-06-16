@@ -1,5 +1,5 @@
 // FeatureSelector.js
-import React, { useCallback, useMemo, useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 
 import {
   Button,
@@ -8,8 +8,8 @@ import {
   DialogActions,
   DialogContent,
   Grid,
-} from '@material-ui/core'
-import Icon from '@material-ui/core/Icon'
+  Icon,
+} from '@mui/material'
 import messages from '../../constants/messages.json'
 import { ModalKeyboardHandler } from '../../helpers/ModalKeyboardHandler'
 import {
@@ -44,11 +44,11 @@ const featureCategoryReducer = (map, result) => {
 const FeatureAvailableGroup = ({ category, entities, toggleFeatures }) => {
   return (
     <Grid container spacing={2} className={`modal-group category ${category}`}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <h6>{category}</h6>
       </Grid>
       {entities.map((feature, i) => (
-        <Grid item xs={12} key={i}>
+        <Grid size={12} key={i}>
           <FeatureAvailable feature={feature} toggleFeatures={toggleFeatures} />
         </Grid>
       ))}
@@ -118,8 +118,8 @@ export const FeatureSelectorModal = ({ theme = 'light' }) => {
     }, 300)
   }
 
-  const handleKeyDown = useCallback(
-    keyboardHandler.createKeyDownHandler(() => contentRef.current),
+  const handleKeyDown = useMemo(
+    () => keyboardHandler.createKeyDownHandler(() => contentRef.current),
     []
   )
 
@@ -172,7 +172,7 @@ export const FeatureSelectorModal = ({ theme = 'light' }) => {
           {loading ? (
             <CircularProgress />
           ) : (
-            <Grid item xs={12}>
+            <Grid size={12}>
               {searchResults.length === 0 && <p>No matching features</p>}
               {Object.keys(groupedResults).map((key) => {
                 return (

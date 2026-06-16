@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: ['17']
-        node-version: [20.x]
+        java: ['25']
+        node-version: [24.x]
     steps:
       - name: "📥 Checkout repository"
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -32,8 +32,10 @@ jobs:
       - name: "🔨 Build project"
         id: build
         run: ./gradlew build
+      - name: "🪵 npm debug logs (diagnostic)"
+        if: failure()
+        run: tail -n 300 /home/runner/.npm/_logs/*.log
       - name: Verify Run
-        if: steps.build.outcome == 'success' && github.event_name == 'push'
         run: |
           cd ./app/launch/
           npm test

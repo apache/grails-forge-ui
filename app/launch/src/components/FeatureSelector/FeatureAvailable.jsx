@@ -5,8 +5,8 @@ import {
   Card,
   CardHeader,
   Fab,
-} from '@material-ui/core'
-import Icon from '@material-ui/core/Icon'
+  Icon,
+} from '@mui/material'
 
 const FeatureAvailable = ({ feature, toggleFeatures }) => {
     return (

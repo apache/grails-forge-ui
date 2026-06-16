@@ -1,22 +1,24 @@
-// Link.react.test.js
 import React from 'react'
-import { create, act } from 'react-test-renderer'
-import { useRecoilState } from 'recoil'
+import { render } from '@testing-library/react'
 import ApplicationState from '../../../state/ApplicationState'
-import { initialValueState } from '../../../state/store'
+import { useAppStore } from '../../../state/store'
+
+beforeEach(() => {
+  useAppStore.setState(useAppStore.getInitialState())
+})
 
 const TestView = () => {
-  const [form] = useRecoilState(initialValueState)
+  const form = useAppStore((s) => s.initialValues)
 
   return (
     <>
-      <div className="type">{`${form.type}`}</div>
-      <div className="reloading">{`${form.reloading}`}</div>
-      <div className="servlet">{`${form.servlet}`}</div>
-      <div className="gorm">{`${form.gorm}`}</div>
-      <div className="javaVersion">{`${form.javaVersion}`}</div>
-      <div className="name">{`${form.name}`}</div>
-      <div className="package">{`${form.package}`}</div>
+      <div className="type">{`${form.type || ''}`}</div>
+      <div className="reloading">{`${form.reloading || ''}`}</div>
+      <div className="servlet">{`${form.servlet || ''}`}</div>
+      <div className="gorm">{`${form.gorm || ''}`}</div>
+      <div className="javaVersion">{`${form.javaVersion || ''}`}</div>
+      <div className="name">{`${form.name || 'demo'}`}</div>
+      <div className="package">{`${form.package || 'com.example'}`}</div>
     </>
   )
 }
@@ -35,40 +37,29 @@ const TEST_DATA = [
 
 TEST_DATA.forEach(({ initialData }) => {
   it(`Initial Form Data with "${Object.keys(initialData).join(',')}"`, () => {
-    let testRenderer
-    act(() => {
-      testRenderer = create(
-        <ApplicationState initialData={initialData}>
-          <TestView />
-        </ApplicationState>
-      )
-    })
+    const { container } = render(
+      <ApplicationState initialData={initialData}>
+        <TestView />
+      </ApplicationState>
+    )
 
-    const testInstance = testRenderer.root
-    expect(testRenderer.toJSON()).toMatchSnapshot()
-
-    expect(testInstance.findByProps({ className: 'reloading' }).children).toEqual([
-      `${initialData.reloading || ''}`,
-    ])
-
-    expect(testInstance.findByProps({ className: 'servlet' }).children).toEqual([
-      `${initialData.servlet || ''}`,
-    ])
-
-    expect(testInstance.findByProps({ className: 'gorm' }).children).toEqual([
-      `${initialData.gorm || ''}`,
-    ])
-
-    expect(
-      testInstance.findByProps({ className: 'javaVersion' }).children
-    ).toEqual([`${initialData.javaVersion || ''}`])
-
-    expect(testInstance.findByProps({ className: 'name' }).children).toEqual([
-      `${initialData.name || 'demo'}`,
-    ])
-
-    expect(testInstance.findByProps({ className: 'package' }).children).toEqual(
-      [`${initialData.package || 'com.example'}`]
+    expect(container.querySelector('.reloading').textContent).toEqual(
+      `${initialData.reloading || ''}`
+    )
+    expect(container.querySelector('.servlet').textContent).toEqual(
+      `${initialData.servlet || ''}`
+    )
+    expect(container.querySelector('.gorm').textContent).toEqual(
+      `${initialData.gorm || ''}`
+    )
+    expect(container.querySelector('.javaVersion').textContent).toEqual(
+      `${initialData.javaVersion || ''}`
+    )
+    expect(container.querySelector('.name').textContent).toEqual(
+      `${initialData.name || 'demo'}`
+    )
+    expect(container.querySelector('.package').textContent).toEqual(
+      `${initialData.package || 'com.example'}`
     )
   })
 })

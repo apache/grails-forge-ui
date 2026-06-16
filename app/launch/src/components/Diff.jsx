@@ -15,8 +15,8 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-} from '@material-ui/core'
-import Icon from '@material-ui/core/Icon'
+  Icon,
+} from '@mui/material'
 
 import { darcula } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import { prism } from 'react-syntax-highlighter/dist/cjs/styles/prism'
@@ -83,7 +83,7 @@ const Diff = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
         </DialogTitle>
         <DialogContent style={{ paddingTop: 8 }}>
           <Grid container className="grid-container" style={{ paddingTop: 0 }}>
-            <Grid item xs={12} className={'grid-column'}>
+            <Grid size={12} className={'grid-column'}>
               {diff && (
                 <SyntaxHighlighter
                   className="codePreview"

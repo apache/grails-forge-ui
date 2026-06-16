@@ -1,6 +1,5 @@
 import { ACTIVITY_KEY, isDeepLinkReferral } from '../../helpers/Routing'
 import { getStorageValue } from '../../hooks/useLocalStorage'
-import { initialValueState } from '../store'
 import { formResets } from './formResets'
 import { initialValueGenerator, providedDefaults } from './providedDefaults'
 import { StarterSDK } from './StarterSDK'
@@ -49,7 +48,7 @@ function extractAccessoryData(query = {}) {
 
 export const initializeStateFactory =
   (initialData) =>
-  ({ set }) => {
+  (store) => {
     const query = providedDefaults()
     const isReferral = isDeepLinkReferral(query)
     const initialValueData = initialValueGenerator(
@@ -67,5 +66,16 @@ export const initializeStateFactory =
       initialData
     )
 
-    set(initialValueState, init)
+    store.getState().setInitialValues(init)
+
+    // Also set form fields from initial values
+    const state = store.getState()
+    if (init.name !== undefined) state.setName(init.name)
+    if (init.package !== undefined) state.setPackage(init.package)
+    if (init.type !== undefined) state.setAppType(init.type)
+    if (init.javaVersion !== undefined) state.setJavaVersion(init.javaVersion)
+    if (init.gorm !== undefined) state.setGorm(init.gorm)
+    if (init.servlet !== undefined) state.setServlet(init.servlet)
+    if (init.reloading !== undefined) state.setReloading(init.reloading)
+    if (init.features !== undefined) state.setFeatures(init.features)
   }

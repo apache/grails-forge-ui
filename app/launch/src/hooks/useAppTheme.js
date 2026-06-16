@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from 'react'
-import { atom, useRecoilState } from 'recoil'
+import { create } from 'zustand'
+
 export const THEME_LIGHT = 'light'
 export const THEME_DARK = 'dark'
 
@@ -24,21 +25,22 @@ export const nextTheme = (theme) => {
   return theme === THEME_LIGHT ? THEME_DARK : THEME_LIGHT
 }
 
-const themeState = atom({
-  key: 'THEME_STATE',
-  default: registerTheme(loadTheme()),
-})
+const useThemeStore = create((set) => ({
+  theme: registerTheme(loadTheme()),
+  setTheme: (theme) => set({ theme }),
+}))
 
 export default function useAppTheme() {
-  const [theme, setTheme] = useRecoilState(themeState)
+  const theme = useThemeStore((s) => s.theme)
+  const setTheme = useThemeStore((s) => s.setTheme)
 
   useEffect(() => {
     registerTheme(theme)
   }, [theme])
 
   const toggleTheme = useCallback(() => {
-    setTheme((theme) => nextTheme(theme))
-  }, [setTheme])
+    setTheme(nextTheme(theme))
+  }, [setTheme, theme])
 
   return [theme, toggleTheme]
 }

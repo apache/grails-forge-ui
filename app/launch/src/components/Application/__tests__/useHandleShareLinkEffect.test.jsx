@@ -1,6 +1,5 @@
-// Link.react.test.js
 import React from 'react'
-import { create, act } from 'react-test-renderer'
+import { render, act } from '@testing-library/react'
 import { MicronautStarterSDK } from '../../../micronaut'
 import ApplicationState from '../../../state/ApplicationState'
 import { useHandleShareLinkRouteEffect } from '../useOnMountRouting'
@@ -40,9 +39,9 @@ it(`Test Duplicate Initialization Doesn't Re-Run Initial Routing`, async () => {
     },
   }
 
-  let root
+  let result
   act(() => {
-    root = create(
+    result = render(
       <TestApp
         sdk={sdk}
         initialData={{ activity: 'preview', type: 'WEB' }}
@@ -53,7 +52,7 @@ it(`Test Duplicate Initialization Doesn't Re-Run Initial Routing`, async () => {
   expect(action.key).toEqual('preview')
 
   act(() => {
-    root.update(
+    result.rerender(
       <TestApp
         sdk={sdk}
         initialData={{ activity: 'diff', type: 'WEB' }}
@@ -114,7 +113,7 @@ TEST_DATA.forEach(({ initialData, explain, hasError }) => {
     const sdk = new MicronautStarterSDK({ baseUrl: 'http://localhost' })
 
     act(() => {
-      create(
+      render(
         <TestApp
           initialData={initialData}
           sdk={sdk}

@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useRef, useMemo, useCallback } from 'react'
-import { Grid, LinearProgress } from '@material-ui/core'
+import { Grid, LinearProgress } from '@mui/material'
 
 import Lang from '../../helpers/Lang'
 import { resetRoute } from '../../helpers/Routing'
@@ -11,6 +11,8 @@ import {
   useInitialData,
   useConfigureInitialVersionEffect,
   useResetStarterForm,
+  useLoadOptionsEffect,
+  useLoadFeaturesEffect,
 } from '../../state/store'
 import { downloadBlob } from '../../utility'
 
@@ -83,6 +85,10 @@ export function AppContainer({ initialData, errorHandlers }) {
     onCloseNextSteps()
     resetForm()
   }
+
+  // Load options and features reactively
+  useLoadOptionsEffect()
+  useLoadFeaturesEffect()
 
   useConfigureInitialVersionEffect(
     useCallback(
@@ -204,10 +210,10 @@ export function AppContainer({ initialData, errorHandlers }) {
               />
 
               <Grid container spacing={1} className="button-row">
-                <Grid item xs={3} className="xs6">
+                <Grid size={3} className="xs6">
                   <FeatureSelectorModal theme={theme} />
                 </Grid>
-                <Grid item xs={3} className="xs6">
+                <Grid size={3} className="xs6">
                   <Diff
                     ref={diffView}
                     theme={theme}
@@ -216,7 +222,7 @@ export function AppContainer({ initialData, errorHandlers }) {
                     onClose={onClearDiff}
                   />
                 </Grid>
-                <Grid item xs={3} className="xs6">
+                <Grid size={3} className="xs6">
                   <CodePreview
                     ref={previewView}
                     theme={theme}
@@ -225,7 +231,7 @@ export function AppContainer({ initialData, errorHandlers }) {
                     onClose={onClearPreview}
                   />
                 </Grid>
-                <Grid item xs={3} className="xs6">
+                <Grid size={3} className="xs6">
                   <GenerateButtons
                     theme={theme}
                     disabled={disabled}

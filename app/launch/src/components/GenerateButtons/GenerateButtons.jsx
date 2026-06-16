@@ -5,8 +5,8 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
-} from '@material-ui/core'
-import Icon from '@material-ui/core/Icon'
+  Icon,
+} from '@mui/material'
 
 import messages from '../../constants/messages.json'
 
