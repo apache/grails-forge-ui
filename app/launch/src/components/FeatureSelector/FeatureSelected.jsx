@@ -1,5 +1,6 @@
 // FeatureSelected.js
 import React, { useMemo } from 'react'
+import { impliedFeatures } from '../../helpers/featureRelations'
 import {
   useAvailableFeatures,
   useSelectedFeaturesHandlers,
@@ -63,10 +64,28 @@ export function FeatureSelectedList() {
     ))
   }, [selectedFeatureValues, onRemoveFeature, availableFeatures])
 
+  const impliedRows = useMemo(() => {
+    const implied = impliedFeatures(selectedFeatures, availableFeatures)
+    return Object.entries(implied).map(([name, byTitle]) => {
+      const feature = availableFeatures.find((f) => f.name === name)
+      return (
+        <div
+          key={`implied-${name}`}
+          className="chip implied"
+          style={{ marginRight: 10, opacity: 0.7 }}
+          title={`Included automatically by ${byTitle}`}
+        >
+          {feature ? feature.title : name} (included)
+        </div>
+      )
+    })
+  }, [selectedFeatures, availableFeatures])
+
   return (
     <div className="col s12">
       <h6>Additional Selected Features ({selectedFeatureValues.length})</h6>
       {sRows}
+      {impliedRows}
     </div>
   )
 }

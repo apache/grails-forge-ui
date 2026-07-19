@@ -9,14 +9,25 @@ import {
 } from '@mui/material'
 
 const FeatureAvailable = ({ feature, toggleFeatures }) => {
+    const implied = Boolean(feature.impliedBy)
+    const disabled = Boolean(feature.conflictsWith)
+    const stateSuffix = implied
+        ? ` — included automatically by ${feature.impliedBy}`
+        : disabled
+        ? ` — unavailable with ${feature.conflictsWith}`
+        : ''
     return (
         <Card
             id={`mn-feature-${feature.name}`}
             className={`mn-feature-selection hoverable ${
                 feature.selected ? 'selected' : ''
-            }`}
+            }${implied ? ' implied' : ''}${disabled ? ' disabled' : ''}`}
             onClick={(e) => toggleFeatures(e, feature)}
-            style={{ cursor: 'pointer', position: 'relative' }}
+            style={{
+                cursor: implied || disabled ? 'not-allowed' : 'pointer',
+                opacity: disabled ? 0.5 : 1,
+                position: 'relative',
+            }}
         >
             <CardHeader
               title={
@@ -25,7 +36,8 @@ const FeatureAvailable = ({ feature, toggleFeatures }) => {
                     : feature.title) +
                 (feature.community != null && feature.community
                     ? ' (community)'
-                    : '')
+                    : '') +
+                stateSuffix
               }
               subheader={feature.description}
               titleTypographyProps={{
