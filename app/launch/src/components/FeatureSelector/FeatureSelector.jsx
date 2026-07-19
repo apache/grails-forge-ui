@@ -11,6 +11,11 @@ import {
   Icon,
 } from '@mui/material'
 import messages from '../../constants/messages.json'
+import {
+  conflictingWith,
+  impliedFeatures,
+  occupiedGroups,
+} from '../../helpers/featureRelations'
 import { ModalKeyboardHandler } from '../../helpers/ModalKeyboardHandler'
 import {
   useSelectedFeatures,
@@ -69,13 +74,23 @@ export const FeatureSelectorModal = ({ theme = 'light' }) => {
 
   const selectedFeatureKeys = Object.keys(selectedFeatures)
   const availableFeatures = useMemo(() => {
+    const implied = impliedFeatures(selectedFeatures, features)
+    const groups = occupiedGroups(selectedFeatures, features)
     return features.map((feature) => {
+      const selected = selectedFeatureKeys.includes(feature.name)
+      const impliedBy = !selected ? implied[feature.name] : undefined
+      const conflict =
+        !selected && !impliedBy
+          ? conflictingWith(feature, groups, features)
+          : null
       return {
         ...feature,
-        selected: selectedFeatureKeys.includes(feature.name),
+        selected,
+        impliedBy,
+        conflictsWith: conflict,
       }
     })
-  }, [features, selectedFeatureKeys])
+  }, [features, selectedFeatures, selectedFeatureKeys])
 
   const searchResults = useMemo(() => {
     if (!search.length) {
@@ -100,6 +115,9 @@ export const FeatureSelectorModal = ({ theme = 'light' }) => {
   const toggleFeatures = (event, feature) => {
     if (event && event.preventDefault) {
       event.preventDefault()
+    }
+    if (feature.conflictsWith || feature.impliedBy) {
+      return
     }
     feature.selected ? onRemoveFeature(feature) : onAddFeature(feature)
   }
