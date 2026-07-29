@@ -6,7 +6,6 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-  Icon,
 } from '@mui/material'
 import { useStarterForm } from '../../state/store'
 import { guessOs, osOpts, OS_WINDOWS, OS_NIX } from '../../utility'
@@ -25,25 +24,12 @@ const sortedOsOpts = osOpts.sort((a, b) => {
 
 const NextSteps = ({ info, theme = 'light', onClose, onStartOver }) => {
   const { name } = useStarterForm()
-  const { htmlUrl, cloneUrl } = info
   const [os, setOs] = useState(guessedOs)
 
   const unpackCommand = useMemo(() => {
-    switch (info.type.toLowerCase()) {
-      case 'clone': {
-        const all = `git clone ${cloneUrl}`
-        const cmd = { [OS_NIX]: all, [OS_WINDOWS]: all }
-        return { action: 'Clone the repo', cmd }
-      }
-      case 'zip': {
-        const nix = `unzip ${name}.zip`
-        const unzip = { [OS_NIX]: nix }
-        return { action: 'Unzip the archive', cmd: unzip }
-      }
-      default:
-        return null
-    }
-  }, [info.type, cloneUrl, name])
+    const nix = `unzip ${name}.zip`
+    return { action: 'Unzip the archive', cmd: { [OS_NIX]: nix } }
+  }, [name])
 
   const cdCommand = useMemo(() => {
     const cd = `cd ${name}`
@@ -90,33 +76,17 @@ const NextSteps = ({ info, theme = 'light', onClose, onStartOver }) => {
           ))}
         </div>
 
-        {htmlUrl && (
-          <div className="next-steps-wrapper">
-            <h5 className="heading">View your new repo on GitHub</h5>
+        <div className="next-steps-wrapper">
+          <h5 className="heading">{unpackCommand.action}</h5>
+          {unpackCommand.cmd[os] && (
             <Grid container className="next-steps-row">
-              <Grid className="text">{htmlUrl}</Grid>
+              <Grid className="text">{unpackCommand.cmd[os]}</Grid>
               <Grid className="icon">
-                <a target="_blank" rel="noopener noreferrer" href={htmlUrl}>
-                  <Icon>link</Icon>
-                </a>
+                <CopyToClipboard value={unpackCommand.cmd[os]} />
               </Grid>
             </Grid>
-          </div>
-        )}
-
-        {unpackCommand && (
-          <div className="next-steps-wrapper">
-            <h5 className="heading">{unpackCommand.action}</h5>
-            {unpackCommand.cmd[os] && (
-              <Grid container className="next-steps-row">
-                <Grid className="text">{unpackCommand.cmd[os]}</Grid>
-                <Grid className="icon">
-                  <CopyToClipboard value={unpackCommand.cmd[os]} />
-                </Grid>
-              </Grid>
-            )}
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="next-steps-wrapper">
           <h5 className="heading">cd into the project</h5>

@@ -137,11 +137,6 @@ export const useAppStore = create((set, get) => ({
       features,
     })
   },
-  getGitHubLink: () => {
-    const form = get().getStarterForm()
-    const baseUrl = get().getBaseUrl()
-    return StarterSDK.githubHrefForUrl(baseUrl, form)
-  },
   getCreateCommand: () => {
     const form = get().getStarterForm()
     const baseUrl = get().getBaseUrl()
@@ -280,25 +275,6 @@ export function useCurrenSdk() {
 
 export function useInitialData() {
   return useAppStore((s) => s.initialValues)
-}
-
-export function useGitHubShareLink() {
-  const selectedVersion = useAppStore((s) => s.selectedVersion)
-  const appType = useAppStore((s) => s.appType)
-  const name = useAppStore((s) => s.name)
-  const pkg = useAppStore((s) => s.package)
-  const servlet = useAppStore((s) => s.servlet)
-  const gorm = useAppStore((s) => s.gorm)
-  const reloading = useAppStore((s) => s.reloading)
-  const javaVersion = useAppStore((s) => s.javaVersion)
-  const features = useAppStore((s) => s.features)
-  return useMemo(() => {
-    const form = setStorageValue(INITIAL_FORM_DATA_STORAGE_KEY, {
-      type: appType, name, package: pkg, javaVersion, gorm, servlet, reloading, features,
-    })
-    const baseUrl = selectedVersion?.api
-    return StarterSDK.githubHrefForUrl(baseUrl, form)
-  }, [selectedVersion, appType, name, pkg, servlet, gorm, reloading, javaVersion, features])
 }
 
 export function useSharableLink() {

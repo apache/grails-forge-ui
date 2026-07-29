@@ -30,7 +30,7 @@ export default class ToUrl {
   static make(createCommand, prefix) {
     if (!prefix) {
       console.error(
-        "A prefix is required, should be one of 'diff', 'preview', 'github', 'create'"
+        "A prefix is required, should be one of 'diff', 'preview', 'create'"
       )
     }
     const {
