@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/apache/grails-forge-ui/workflows/Publish/badge.svg)](https://github.com/apache/grails-forge-ui/actions)
 
-This project builds the [Grails Application Forge UI](https://grails.apache.org/start/). It is published into `apache/grails-website` and served at that path. `start.grails.org` redirects there.
+This project builds the [Grails Application Forge UI](https://grails.apache.org/start/). It is published into `apache/grails-website` and served at that path. `start.grails.org` continues to serve the GitHub Pages build until the Apache.org site is ready.
 
 
 ## To build the site for CI run:
