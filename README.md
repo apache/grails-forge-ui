@@ -1,8 +1,8 @@
 # Grails Application Forge UI
 
-[![Build Status](https://github.com/grails/grails-forge-ui/workflows/Publish/badge.svg)](https://github.com/grails/grails-forge-ui/actions)
+[![Build Status](https://github.com/apache/grails-forge-ui/workflows/Publish/badge.svg)](https://github.com/apache/grails-forge-ui/actions)
 
-This project builds the [Grails Application Forge UI](https://start.grails.org).
+This project builds the [Grails Application Forge UI](https://grails.apache.org/start/). It is published into `apache/grails-website` and served at that path. `start.grails.org` redirects there.
 
 
 ## To build the site for CI run:
@@ -102,7 +102,7 @@ You can find the version feed file at [./app/launch/public/grails-version-feed.j
   ```
   {
       "key": "RELEASE",
-      "baseUrl": "https://start.grails.org",
+      "baseUrl": "https://latest.grails.org",
       "order": 0
   }
   ```
@@ -112,7 +112,7 @@ You can find the version feed file at [./app/launch/public/grails-version-feed.j
   ```
   {
       key: "RELEASE",
-      baseUrl: "https://start.grails.org",
+      baseUrl: "https://latest.grails.org",
       order: 0
   }
   ```

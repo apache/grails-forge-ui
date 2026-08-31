@@ -1,5 +1,5 @@
 const axios = require("axios");
-const VERSION_FEED_URL = "https://start.grails.org/grails-version-feed.json";
+const VERSION_FEED_URL = "https://grails.apache.org/start/grails-version-feed.json";
 const { startProxy, startVersionServer } = require("./commands");
 
 /**

@@ -38,8 +38,8 @@
     "scripts": {
         "start": "vite",
         "start:local": "cross-env VITE_VERSION_FEED=http://localhost:8088/grails-version-feed.json vite",
-        "build": "vite build",
-        "preview": "vite preview",
+        "build": "cross-env VITE_BASE=/start/ vite build",
+        "preview": "cross-env VITE_BASE=/start/ vite preview",
         "format": "prettier --write \"**/*.+(js|jsx|json|css|md)\"",
         "lint": "eslint \"./src/**/*.{js,jsx}\"",
         "lint:fix": "eslint \"./src/**/*.{js,jsx}\" --fix",

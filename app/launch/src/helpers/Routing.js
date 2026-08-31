@@ -1,6 +1,20 @@
 import { parseQuery } from './url'
 
-export const BASE_PATH = ''
+function normalizeBasePath(baseUrl) {
+  return String(baseUrl || '/').replace(/^\/+|\/+$/g, '')
+}
+
+export const BASE_PATH = normalizeBasePath(import.meta.env.BASE_URL)
+
+export function withAppBase(path = '') {
+  const prefix = BASE_PATH ? `/${BASE_PATH}` : ''
+  if (!path) {
+    return prefix || '/'
+  }
+  const suffix = path.startsWith('/') ? path : `/${path}`
+  return `${prefix}${suffix}`
+}
+
 export const ACTIVITY_KEY = 'activity'
 export const VERSION_KEY = 'version'
 export const FEATURES_KEY = 'features'
@@ -71,7 +85,7 @@ export function resolveActionRoute(queryData) {
 
 export function resetRoute(full = true) {
   const search = full ? '' : window.location.search
-  window.history.replaceState({}, document.title, `/${BASE_PATH}${search}`)
+  window.history.replaceState({}, document.title, `${withAppBase()}${search}`)
 }
 
 export function updateRoute(route) {
@@ -79,7 +93,7 @@ export function updateRoute(route) {
   window.history.replaceState(
     {},
     document.title,
-    `/${BASE_PATH}/${route}${search}`
+    `${withAppBase(route)}${search}`
   )
 }
 
