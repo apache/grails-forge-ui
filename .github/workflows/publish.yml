@@ -50,8 +50,3 @@ jobs:
           LAST_SNAPSHOT_FOLDER: start
           PURGE_EXISTING: 'true'
           DOCUMENTATION_BRANCH: asf-site-production
-      - name: "↪️ Redirect start.grails.org to grails.apache.org/start"
-        run: ./publish.sh
-        env:
-          GITHUB_SLUG: ${{ github.repository }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
