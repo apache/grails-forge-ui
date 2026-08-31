@@ -8,7 +8,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [svgr(), react()],
-  base: '/',
+  // Production is served at https://grails.apache.org/start/. Local `vite` keeps `/`.
+  base: process.env.VITE_BASE || '/',
   server: {
     port: 3000,
     open: true,
