@@ -40,7 +40,7 @@ const AltFooter = () => (
         </div>
         <div className="content">
             <nav className="partnersnav">
-                <p>© 2005-2025 the Apache Grails project — Grails is Open Source:&nbsp;
+                <p>© 2005-2026 The Apache Software Foundation — Grails is Open Source:&nbsp;
                     <a href='https://www.apache.org/licenses/'>License</a>,&nbsp;
                     <a href='https://privacy.apache.org/policies/privacy-policy-public.html'>Privacy Policy</a>,&nbsp;
                     <a href='https://www.apache.org/foundation/sponsorship'>Sponsor Apache</a>,&nbsp;
