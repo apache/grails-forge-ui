@@ -145,32 +145,8 @@ export class MicronautStarterSDK {
     return this.get(createCommand.toUrl('create')).then(responseHandler('blob'))
   }
 
-  /**
-   * Get The HREF for the clone to github feature.
-   * @param  {Object} configuration command parameters
-   * @return {String} The link will begin processing the github workflow with redirects
-   */
-  gitHubHref(configuration) {
-    const createCommand = new CreateCommand(configuration, this.baseUrl)
-    return createCommand.toUrl('github')
-  }
-
   static createCommand(configuration, baseUrl) {
     return new CreateCommand(configuration, baseUrl)
-  }
-
-  /**
-   * Get The HREF for the clone to github feature.
-   * @param {String} baseUrl The base URL
-   * @param  {Object} configuration The create command data
-   * @return {String} The link will begin processing the github workflow with redirects
-   */
-  static githubHrefForUrl(baseUrl, configuration) {
-    if (!baseUrl) {
-      return '#'
-    }
-    const createCommand = new CreateCommand(configuration, baseUrl)
-    return createCommand.toUrl('github')
   }
 
   static curlCommand(baseUrl, configuration) {

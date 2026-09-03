@@ -4,41 +4,9 @@ import { resolveActionRoute, isDeepLinkReferral } from '../../helpers/Routing'
 
 import { useCurrenSdk } from '../../state/store'
 
-export function useOnMountRouting(initialData, routingHandlers, onError) {
+export function useOnMountRouting(initialData, routingHandlers) {
   const sdk = useCurrenSdk()
-  useHandleRepoClonedRouteEvent(
-    initialData,
-    routingHandlers.onRepoCreated,
-    onError
-  )
   useHandleShareLinkRouteEffect(sdk, initialData, routingHandlers)
-}
-
-export function useHandleRepoClonedRouteEvent(
-  initialData,
-  onRepoCreated,
-  onError
-) {
-  // Use Effect Hook For Error Handling and
-  // GitHub on complete callback
-  useEffect(() => {
-    const { error, htmlUrl, cloneUrl } = initialData
-    if (!error && !htmlUrl) {
-      return // nothing more to do
-    }
-    setTimeout(() => {
-      if (cloneUrl) {
-        onRepoCreated({
-          cloneUrl,
-          htmlUrl,
-          show: true,
-          type: 'clone',
-        })
-      } else if (error) {
-        onError(new Error(error.replaceAll('+', ' ')))
-      }
-    }, 500)
-  }, [initialData, onRepoCreated, onError])
 }
 
 export function useHandleShareLinkRouteEffect(

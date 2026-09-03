@@ -20,7 +20,6 @@ const GenerateButtons = ({
   disabled,
   theme,
   generateProject,
-  _cloneProject,
   baseUrl,
 }) => {
   const createPayload = useStarterForm()

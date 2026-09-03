@@ -31,13 +31,8 @@ function initialVersionResolver(query = {}) {
 }
 
 function extractAccessoryData(query = {}) {
-  const { debug, cloneUrl, htmlUrl, error, showing } = query
+  const { debug, showing } = query
   return {
-    // Clone To GH Related Keys
-    cloneUrl,
-    htmlUrl,
-    error,
-
     // Code Preview Related Keys
     showing,
 

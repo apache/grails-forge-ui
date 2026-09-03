@@ -106,10 +106,6 @@ export function AppContainer({ initialData, errorHandlers }) {
   // Routing
   const routingHandlers = useMemo(() => {
     return {
-      onRepoCreated: (repoCreatedInfo) => {
-        setNextStepsInfo(repoCreatedInfo)
-      },
-
       preview: async (payload, sdk, opts = { showing: null }) => {
         try {
           const json = await sdk.preview(payload)
@@ -152,7 +148,7 @@ export function AppContainer({ initialData, errorHandlers }) {
   }, [errorHandlers])
 
   // Share Initial Routing Routing
-  useOnMountRouting(initialData, routingHandlers, errorHandlers.onResponseError)
+  useOnMountRouting(initialData, routingHandlers)
 
   // Preflight for any async activity
   const requestPrep = (event) => {
@@ -164,11 +160,6 @@ export function AppContainer({ initialData, errorHandlers }) {
   }
 
   const getFormData = useGetStarterForm()
-
-  // GitHub Clone Feat
-  const onCloneProject = async (_e) => {
-    setLoading(true)
-  }
 
   // Create Feat
   const onGenerateProject = async (e) => {
@@ -235,7 +226,6 @@ export function AppContainer({ initialData, errorHandlers }) {
                   <GenerateButtons
                     theme={theme}
                     disabled={disabled}
-                    cloneProject={onCloneProject}
                     generateProject={onGenerateProject}
                   />
                 </Grid>
