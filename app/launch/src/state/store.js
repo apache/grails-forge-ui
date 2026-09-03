@@ -312,6 +312,24 @@ export function useDefaultIncludedFeatures() {
   return { features, loading, error: null }
 }
 
+const DEFAULT_VERSION_KEY = 'RELEASE'
+
+/**
+ * Which option to preselect when the visitor did not ask for a version.
+ *
+ * Options are ordered oldest first, so position 0 is the oldest supported
+ * release rather than the one to default to. Preselect the feed's RELEASE
+ * channel — the current stable line — and only fall back to position 0 if the
+ * feed has no such entry.
+ *
+ * @param {Array<Object>} options
+ * @return {Number}
+ */
+function defaultVersionIndex(options) {
+  const idx = options.findIndex((opt) => opt.key === DEFAULT_VERSION_KEY)
+  return idx < 0 ? 0 : idx
+}
+
 export function useSelectedVersions() {
   const value = useAppStore((s) => s.selectedVersion)
   const setter = useAppStore((s) => s.setSelectedVersion)
@@ -319,11 +337,8 @@ export function useSelectedVersions() {
   const options = useAvailableVersions()
   useEffect(() => {
     if (!value && options?.length) {
-      let idx = Math.max(
-        0,
-        options.findIndex((opt) => opt.version === defaultVersion)
-      )
-      setter(options[idx])
+      const idx = options.findIndex((opt) => opt.version === defaultVersion)
+      setter(options[idx < 0 ? defaultVersionIndex(options) : idx])
     }
   }, [value, setter, options, defaultVersion])
   return [value, setter, options]
@@ -338,10 +353,11 @@ export function useConfigureInitialVersionEffect(onError) {
   return useEffect(() => {
     if (!value && options?.length) {
       const idx = options.findIndex((opt) => opt.version === defaultVersion)
+      const fallback = defaultVersionIndex(options)
       if (defaultVersion && idx < 0) {
-        onError({ requested: defaultVersion, using: options[0].version })
+        onError({ requested: defaultVersion, using: options[fallback].version })
       }
-      setter(options[Math.max(idx, 0)])
+      setter(options[idx < 0 ? fallback : idx])
     }
   }, [value, setter, options, onError, defaultVersion])
 }
