@@ -1,4 +1,5 @@
 import { CacheApi, SessionStorageAdapter } from '../helpers/Cache'
+import { sortByVersion } from '../helpers/versionCompare'
 import { VERSION_FEED_URL } from './constants'
 import { CreateCommand } from './CreateCommand'
 import {FeatureCommand} from "./FeatureCommand";
@@ -242,10 +243,13 @@ export class MicronautStarterSDK {
     const maybeLoadVersion = (version) =>
       this.loadVersion(version).catch((_i) => null)
 
-    return (
-      await Promise.all(
-        versions.sort((a, b) => a.order - b.order).map(maybeLoadVersion)
-      )
-    ).filter((i) => i)
+    const loaded = (await Promise.all(versions.map(maybeLoadVersion))).filter(
+      (i) => i
+    )
+
+    // The feed's `order` is the publishing channel order (RELEASE, SNAPSHOT,
+    // NEXT...), which says nothing about how the versions themselves relate.
+    // Sort by the Grails version each channel actually resolved to.
+    return sortByVersion(loaded)
   }
 }
