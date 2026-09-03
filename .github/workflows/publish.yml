@@ -4,8 +4,10 @@ on:
     branches:
       - main
   workflow_dispatch:
-# Prevent two simultaneous publishes from racing on grails-website / gh-pages.
-# cancel-in-progress=false so the in-flight deploy completes before the next.
+# Serialize this repo's own publishes: every run purges and rewrites /start.
+# cancel-in-progress=false so an in-flight deploy finishes before the next.
+# Cross-repo races on apache/grails-website are retried by deploy-github-pages@asf
+# (apache/grails-github-actions#110). GitHub concurrency groups are repo-scoped.
 concurrency:
   group: publish-grails-forge-ui
   cancel-in-progress: false
