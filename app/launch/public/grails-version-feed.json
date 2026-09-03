@@ -6,24 +6,34 @@
             "order": 0
         },
         {
-            "key": "NEXT",
-            "baseUrl": "https://next.grails.org",
-            "order": 2
-        },
-        {
             "key": "SNAPSHOT",
             "baseUrl": "https://snapshot.grails.org",
             "order": 1                    
         },
         {
+            "key": "NEXT",
+            "baseUrl": "https://next.grails.org",
+            "order": 2
+        },
+        {
+            "key": "NEXT-SNAPSHOT",
+            "baseUrl": "https://next-snapshot.grails.org",
+            "order": 3
+        },
+        {
             "key": "PREV",
             "baseUrl": "https://prev.grails.org",
-            "order": 3
+            "order": 4
         },
         {
             "key": "PREV-SNAPSHOT",
             "baseUrl": "https://prev-snapshot.grails.org",
-            "order": 4
+            "order": 5
+        },
+        {
+            "key": "OLDER",
+            "baseUrl": "https://older.grails.org",
+            "order": 6
         }
     ]
 }
