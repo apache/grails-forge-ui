@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import Lang from '../../helpers/Lang'
 import { useSelectedVersions } from '../../state/store'
 import RadioGroup from '../RadioGroup'
@@ -7,18 +7,21 @@ import { useStarterVersionKeyboardEvents } from './useStarterFormKeyboardEvents'
 /**
  * Options arrive ordered supported first and unsupported last (see
  * MicronautStarterSDK.loadVersions). Give the unsupported run a group heading
- * so RadioGroup draws a divider ahead of it, and say when support ended.
+ * so RadioGroup draws a disclosure ahead of it, and say when support ended.
  * The store keeps the undecorated options.
  *
  * @param {Array<Object>} options
  * @return {Array<Object>}
  */
 export function decorateVersionOptions(options) {
+  const count = options.filter((option) => option.supported === false).length
+  if (!count) return options
+  const group = Lang.trans('versions.unsupportedGroup', { count })
   return options.map((option) =>
     option.supported === false
       ? {
           ...option,
-          group: Lang.trans('versions.unsupportedGroup'),
+          group,
           hint: Lang.trans('versions.supportEnded', {
             date: option.endOfSupport,
           }),
@@ -29,7 +32,21 @@ export function decorateVersionOptions(options) {
 
 export default function MicronautVersion() {
   const [version, setter, options] = useSelectedVersions()
+  const [showUnsupported, setShowUnsupported] = useState(false)
   const decorated = useMemo(() => decorateVersionOptions(options), [options])
+  const unsupportedGroup = decorated.find((option) => option.group)?.group
+
+  // The selected version must stay visible, so an unsupported selection
+  // (share link, remembered choice, keyboard cycling) keeps the group open.
+  const expanded = showUnsupported || version?.supported === false
+  const collapsedGroups = useMemo(
+    () => (unsupportedGroup && !expanded ? [unsupportedGroup] : []),
+    [unsupportedGroup, expanded]
+  )
+  const toggleUnsupported = useCallback(
+    () => setShowUnsupported(!expanded),
+    [expanded]
+  )
 
   const handleVersionChange = (event) => {
     const { value } = event.target
@@ -47,6 +64,8 @@ export default function MicronautVersion() {
       value={version?.value}
       onChange={handleVersionChange}
       options={decorated}
+      collapsedGroups={collapsedGroups}
+      onToggleGroup={toggleUnsupported}
       expected={2}
     />
   )

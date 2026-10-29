@@ -25,24 +25,42 @@ const OPTIONS = [
   option('PREV', '7.1.7', 'prev.grails.org', '2026-10-31', false),
 ]
 
+const GROUP = 'Unsupported Versions (2)'
+
+const seed = (options = OPTIONS, initialValues = {}) => {
+  useAppStore.getState().setAvailableVersions(options)
+  useAppStore.getState().setInitialValues(initialValues)
+}
+
+const toggle = () => screen.getByRole('button', { name: GROUP })
+const radio = (version) =>
+  screen.getByRole('radio', { name: new RegExp(version.replace('.', '\\.')) })
+const queryRadio = (version) =>
+  screen.queryByRole('radio', {
+    name: new RegExp(version.replace('.', '\\.')),
+  })
+
 beforeEach(() => {
   useAppStore.setState(useAppStore.getInitialState())
   window.localStorage.clear()
-  useAppStore.getState().setAvailableVersions(OPTIONS)
+  seed()
 })
 
 describe('decorateVersionOptions', () => {
-  it('groups unsupported versions and says when their support ended', () => {
+  it('groups unsupported versions with a count and says when their support ended', () => {
     const [release, next, older, prev] = decorateVersionOptions(OPTIONS)
 
     expect(release.group).toBeUndefined()
     expect(release.hint).toBeUndefined()
     expect(next.group).toBeUndefined()
-    expect(older).toMatchObject({
-      group: 'Unsupported Versions',
-      hint: 'Support ended 2026-10-31',
-    })
-    expect(prev.group).toBe('Unsupported Versions')
+    expect(older).toMatchObject({ group: GROUP, hint: 'ended 2026-10-31' })
+    expect(prev.group).toBe(GROUP)
+  })
+
+  it('returns the options untouched when every version is supported', () => {
+    const supported = OPTIONS.slice(0, 2)
+
+    expect(decorateVersionOptions(supported)).toBe(supported)
   })
 
   it('does not mutate the options it is given', () => {
@@ -53,24 +71,35 @@ describe('decorateVersionOptions', () => {
 })
 
 describe('MicronautVersion', () => {
-  it('lists unsupported versions under a divider after the supported ones', async () => {
+  it('hides unsupported versions behind a collapsed disclosure by default', async () => {
     const { container } = render(<MicronautVersion />)
 
-    await waitFor(() =>
-      expect(screen.getByRole('radio', { name: /7\.2\.4/ }).checked).toBe(true)
-    )
-    const children = [...container.querySelectorAll('.radio-group > div')]
-    expect(children.map((el) => el.className)).toEqual([
+    await waitFor(() => expect(radio('7.2.4').checked).toBe(true))
+    expect(toggle().getAttribute('aria-expanded')).toBe('false')
+    expect(queryRadio('7.0.17')).toBeNull()
+    expect(queryRadio('7.1.7')).toBeNull()
+    const rows = [...container.querySelectorAll('.radio-group > *')]
+      .filter((el) => el.tagName !== 'LABEL')
+      .map((el) => el.className)
+    expect(rows).toEqual([
       'radio-row',
       'radio-row',
-      'radio-divider',
-      'radio-row',
-      'radio-row',
+      'radio-divider radio-divider-toggle',
     ])
-    expect(screen.getByRole('separator').textContent).toBe(
-      'Unsupported Versions'
-    )
-    expect(screen.getAllByText('Support ended 2026-10-31')).toHaveLength(2)
+  })
+
+  it('expands the disclosure to list unsupported versions with their end dates', async () => {
+    render(<MicronautVersion />)
+    await waitFor(() => expect(radio('7.2.4').checked).toBe(true))
+
+    fireEvent.click(toggle())
+
+    expect(toggle().getAttribute('aria-expanded')).toBe('true')
+    expect(radio('7.0.17')).toBeTruthy()
+    expect(screen.getAllByText('ended 2026-10-31')).toHaveLength(2)
+
+    fireEvent.click(toggle())
+    expect(queryRadio('7.0.17')).toBeNull()
   })
 
   it('still lets an unsupported version be selected', async () => {
@@ -79,7 +108,8 @@ describe('MicronautVersion', () => {
       expect(useAppStore.getState().selectedVersion?.key).toBe('RELEASE')
     )
 
-    fireEvent.click(screen.getByRole('radio', { name: /7\.0\.17/ }))
+    fireEvent.click(toggle())
+    fireEvent.click(radio('7.0.17'))
 
     const selected = useAppStore.getState().selectedVersion
     expect(selected).toMatchObject({ key: 'OLDER', supported: false })
@@ -88,14 +118,34 @@ describe('MicronautVersion', () => {
     expect(selected.hint).toBeUndefined()
   })
 
-  it('renders no divider when every version is supported', async () => {
-    useAppStore.getState().setAvailableVersions(OPTIONS.slice(0, 2))
+  it('keeps the disclosure open while an unsupported version is selected', async () => {
+    render(<MicronautVersion />)
+    await waitFor(() => expect(radio('7.2.4').checked).toBe(true))
+    fireEvent.click(toggle())
+    fireEvent.click(radio('7.0.17'))
+
+    fireEvent.click(toggle())
+
+    expect(toggle().getAttribute('aria-expanded')).toBe('true')
+    expect(radio('7.0.17').checked).toBe(true)
+  })
+
+  it('opens expanded when the requested version is unsupported', async () => {
+    seed(OPTIONS, { version: '7.1.7' })
 
     render(<MicronautVersion />)
 
-    await waitFor(() =>
-      expect(screen.getByRole('radio', { name: /7\.2\.4/ }).checked).toBe(true)
-    )
+    await waitFor(() => expect(radio('7.1.7').checked).toBe(true))
+    expect(toggle().getAttribute('aria-expanded')).toBe('true')
+  })
+
+  it('shows no disclosure when every version is supported', async () => {
+    seed(OPTIONS.slice(0, 2))
+
+    render(<MicronautVersion />)
+
+    await waitFor(() => expect(radio('7.2.4').checked).toBe(true))
+    expect(screen.queryByRole('button')).toBeNull()
     expect(screen.queryByRole('separator')).toBeNull()
   })
 })

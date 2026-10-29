@@ -17,7 +17,7 @@
         "zip": "You can also directly download a zip"
     },
     "versions": {
-        "unsupportedGroup": "Unsupported Versions",
-        "supportEnded": "Support ended {{date}}"
+        "unsupportedGroup": "Unsupported Versions ({{count}})",
+        "supportEnded": "ended {{date}}"
     }
 }
