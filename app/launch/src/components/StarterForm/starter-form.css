@@ -79,3 +79,30 @@ body.dark .mn-starter-form-main .mn-radio .radio-label {
     margin-top: 0;
   }
 }
+
+/* Version support grouping: divider ahead of unsupported release lines, and
+   the end of support date under each of them */
+.mn-starter-form-main .mn-radio .radio-divider {
+  margin: 10px 0 6px;
+  padding-top: 6px;
+  border-top: 1px solid currentColor;
+  opacity: 0.6;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mn-starter-form-main .mn-radio .radio-hint {
+  display: block;
+  padding-left: 35px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.2;
+  opacity: 0.7;
+}
+
+@media screen and (max-width: 600px) {
+  .mn-starter-form-main .mn-radio .radio-hint {
+    padding-left: 2em;
+  }
+}

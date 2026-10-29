@@ -144,6 +144,12 @@ You can find the version feed file at [./app/launch/public/grails-version-feed.j
       ...
   },
   ```
+## Supported and unsupported versions
+
+Each channel in the feed points at a Grails Forge instance, and the UI reads that instance's `/versions` endpoint to learn which Grails version it serves. Forge instances built from grails-core 7.0.18, 7.1.8, 7.2.5, 8.0.1 and later also report `endOfSupport`, the last day (ISO `yyyy-MM-dd`) that release line is supported. The date comes from `grailsEndOfSupport` in that branch's `gradle.properties`.
+
+The version list shows supported release lines first, oldest to newest, then a divider labelled "Unsupported versions" followed by the lines whose `endOfSupport` has passed, each with the date support ended. Unsupported versions stay selectable. A line stays supported through its `endOfSupport` day, and a missing, null or malformed date is treated as "unknown" and shown with the supported versions, which is also what happens for instances that predate the field.
+
 ## Running the React app without changing grails-version-feed.json
 In dev-proxy-server/ there is a run.command file that will expose the proxies of the grails version feed on port 8088.
 When starting the React app under app/launch use the command:
