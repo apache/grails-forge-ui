@@ -18,6 +18,7 @@
     },
     "versions": {
         "unsupportedGroup": "Unsupported Versions ({{count}})",
+        "unsupportedGroupMore": "Unsupported Versions ({{count}} more)",
         "supportEnded": "ended {{date}}"
     }
 }

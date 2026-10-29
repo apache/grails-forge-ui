@@ -4,7 +4,9 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import { useAppStore } from '../../../state/store'
 import MicronautVersion, {
+  UNSUPPORTED_GROUP,
   decorateVersionOptions,
+  unsupportedGroupLabel,
 } from '../StarterFormMicronautVersion'
 
 const option = (key, version, host, endOfSupport, supported) => ({
@@ -26,13 +28,15 @@ const OPTIONS = [
 ]
 
 const GROUP = 'Unsupported Versions (2)'
+const GROUP_ONE_MORE = 'Unsupported Versions (1 more)'
 
 const seed = (options = OPTIONS, initialValues = {}) => {
   useAppStore.getState().setAvailableVersions(options)
   useAppStore.getState().setInitialValues(initialValues)
 }
 
-const toggle = () => screen.getByRole('button', { name: GROUP })
+const toggle = () =>
+  screen.getByRole('button', { name: /Unsupported Versions/ })
 const radio = (version) =>
   screen.getByRole('radio', { name: new RegExp(version.replace('.', '\\.')) })
 const queryRadio = (version) =>
@@ -47,14 +51,17 @@ beforeEach(() => {
 })
 
 describe('decorateVersionOptions', () => {
-  it('groups unsupported versions with a count and says when their support ended', () => {
+  it('groups unsupported versions and says when their support ended', () => {
     const [release, next, older, prev] = decorateVersionOptions(OPTIONS)
 
     expect(release.group).toBeUndefined()
     expect(release.hint).toBeUndefined()
     expect(next.group).toBeUndefined()
-    expect(older).toMatchObject({ group: GROUP, hint: 'ended 2026-10-31' })
-    expect(prev.group).toBe(GROUP)
+    expect(older).toMatchObject({
+      group: UNSUPPORTED_GROUP,
+      hint: 'ended 2026-10-31',
+    })
+    expect(prev.group).toBe(UNSUPPORTED_GROUP)
   })
 
   it('returns the options untouched when every version is supported', () => {
@@ -70,12 +77,37 @@ describe('decorateVersionOptions', () => {
   })
 })
 
+describe('unsupportedGroupLabel', () => {
+  it('counts the whole group when expanded or fully collapsed', () => {
+    const state = { collapsed: false, hidden: 0, total: 2 }
+    expect(unsupportedGroupLabel(UNSUPPORTED_GROUP, state)).toBe(GROUP)
+    expect(
+      unsupportedGroupLabel(UNSUPPORTED_GROUP, {
+        ...state,
+        collapsed: true,
+        hidden: 2,
+      })
+    ).toBe(GROUP)
+  })
+
+  it('counts what is still hidden when the selection is pinned in view', () => {
+    expect(
+      unsupportedGroupLabel(UNSUPPORTED_GROUP, {
+        collapsed: true,
+        hidden: 1,
+        total: 2,
+      })
+    ).toBe(GROUP_ONE_MORE)
+  })
+})
+
 describe('MicronautVersion', () => {
   it('hides unsupported versions behind a collapsed disclosure by default', async () => {
     const { container } = render(<MicronautVersion />)
 
     await waitFor(() => expect(radio('7.2.4').checked).toBe(true))
     expect(toggle().getAttribute('aria-expanded')).toBe('false')
+    expect(toggle().textContent).toContain(GROUP)
     expect(queryRadio('7.0.17')).toBeNull()
     expect(queryRadio('7.1.7')).toBeNull()
     const rows = [...container.querySelectorAll('.radio-group > *')]
@@ -127,8 +159,20 @@ describe('MicronautVersion', () => {
     fireEvent.click(toggle())
 
     expect(toggle().getAttribute('aria-expanded')).toBe('false')
+    expect(toggle().textContent).toContain(GROUP_ONE_MORE)
     expect(radio('7.0.17').checked).toBe(true)
     expect(queryRadio('7.1.7')).toBeNull()
+  })
+
+  it('stays expanded when the only unsupported version is the selected one', async () => {
+    seed([...OPTIONS.slice(0, 3)], { version: '7.0.17' })
+
+    render(<MicronautVersion />)
+
+    await waitFor(() => expect(radio('7.0.17').checked).toBe(true))
+    fireEvent.click(toggle())
+    expect(toggle().getAttribute('aria-expanded')).toBe('true')
+    expect(toggle().textContent).toContain('Unsupported Versions (1)')
   })
 
   it('opens the disclosure when the selection moves to an unsupported version', async () => {

@@ -4,24 +4,24 @@ import { useSelectedVersions } from '../../state/store'
 import RadioGroup from '../RadioGroup'
 import { useStarterVersionKeyboardEvents } from './useStarterFormKeyboardEvents'
 
+export const UNSUPPORTED_GROUP = 'unsupported'
+
 /**
  * Options arrive ordered supported first and unsupported last (see
- * MicronautStarterSDK.loadVersions). Give the unsupported run a group heading
- * so RadioGroup draws a disclosure ahead of it, and say when support ended.
+ * MicronautStarterSDK.loadVersions). Put the unsupported run in a group so
+ * RadioGroup draws a disclosure ahead of it, and say when support ended.
  * The store keeps the undecorated options.
  *
  * @param {Array<Object>} options
  * @return {Array<Object>}
  */
 export function decorateVersionOptions(options) {
-  const count = options.filter((option) => option.supported === false).length
-  if (!count) return options
-  const group = Lang.trans('versions.unsupportedGroup', { count })
+  if (!options.some((option) => option.supported === false)) return options
   return options.map((option) =>
     option.supported === false
       ? {
           ...option,
-          group,
+          group: UNSUPPORTED_GROUP,
           hint: Lang.trans('versions.supportEnded', {
             date: option.endOfSupport,
           }),
@@ -30,11 +30,25 @@ export function decorateVersionOptions(options) {
   )
 }
 
+/**
+ * Heading for the unsupported group. Collapsed with the selected version
+ * pinned in view, it counts what is still hidden; otherwise it counts the
+ * whole group.
+ *
+ * @param {String} _group
+ * @param {Object} state  {collapsed, hidden, total} from RadioGroup
+ * @return {String}
+ */
+export function unsupportedGroupLabel(_group, { collapsed, hidden, total }) {
+  return collapsed && hidden < total
+    ? Lang.trans('versions.unsupportedGroupMore', { count: hidden })
+    : Lang.trans('versions.unsupportedGroup', { count: total })
+}
+
 export default function MicronautVersion() {
   const [version, setter, options] = useSelectedVersions()
   const [showUnsupported, setShowUnsupported] = useState(false)
   const decorated = useMemo(() => decorateVersionOptions(options), [options])
-  const unsupportedGroup = decorated.find((option) => option.group)?.group
 
   // Landing on an unsupported version (share link, remembered choice,
   // keyboard cycling) opens the group so the neighbours are in view. It can
@@ -43,8 +57,8 @@ export default function MicronautVersion() {
     if (version?.supported === false) setShowUnsupported(true)
   }, [version])
   const collapsedGroups = useMemo(
-    () => (unsupportedGroup && !showUnsupported ? [unsupportedGroup] : []),
-    [unsupportedGroup, showUnsupported]
+    () => (showUnsupported ? [] : [UNSUPPORTED_GROUP]),
+    [showUnsupported]
   )
   const toggleUnsupported = useCallback(
     () => setShowUnsupported((shown) => !shown),
@@ -69,6 +83,7 @@ export default function MicronautVersion() {
       options={decorated}
       collapsedGroups={collapsedGroups}
       onToggleGroup={toggleUnsupported}
+      groupLabel={unsupportedGroupLabel}
       expected={2}
     />
   )

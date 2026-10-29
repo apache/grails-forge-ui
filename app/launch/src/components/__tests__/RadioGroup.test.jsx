@@ -52,6 +52,14 @@ describe('RadioGroup', () => {
     ])
   })
 
+  it('labels a divider through groupLabel', () => {
+    renderGroup({
+      groupLabel: (group, { total }) => `${group} (${total})`,
+    })
+
+    expect(screen.getByRole('separator').textContent).toBe('Legacy (2)')
+  })
+
   it('shows a hint after its option and keeps the option selectable', () => {
     const onChange = vi.fn()
     renderGroup({ onChange })
@@ -123,6 +131,42 @@ describe('RadioGroup', () => {
         'radio-divider radio-divider-toggle',
         'radio-row',
       ])
+    })
+
+    it('tells groupLabel how many options are hidden', () => {
+      const groupLabel = vi.fn((group) => group)
+      renderGroup({
+        value: 'd',
+        collapsedGroups: ['Legacy'],
+        onToggleGroup: vi.fn(),
+        groupLabel,
+      })
+
+      expect(groupLabel).toHaveBeenCalledWith('Legacy', {
+        collapsed: true,
+        hidden: 1,
+        total: 2,
+      })
+    })
+
+    it('renders a collapsed group expanded when nothing is left to hide', () => {
+      const groupLabel = vi.fn((group) => group)
+      renderGroup({
+        options: OPTIONS.slice(0, 3),
+        value: 'c',
+        collapsedGroups: ['Legacy'],
+        onToggleGroup: vi.fn(),
+        groupLabel,
+      })
+
+      const toggle = screen.getByRole('button', { name: 'Legacy' })
+      expect(toggle.getAttribute('aria-expanded')).toBe('true')
+      expect(screen.getByRole('radio', { name: /Gamma/ }).checked).toBe(true)
+      expect(groupLabel).toHaveBeenCalledWith('Legacy', {
+        collapsed: false,
+        hidden: 0,
+        total: 1,
+      })
     })
 
     it('keeps option ids stable so a collapsed group does not renumber the rest', () => {
