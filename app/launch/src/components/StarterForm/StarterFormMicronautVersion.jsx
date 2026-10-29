@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Lang from '../../helpers/Lang'
 import { useSelectedVersions } from '../../state/store'
 import RadioGroup from '../RadioGroup'
@@ -36,16 +36,19 @@ export default function MicronautVersion() {
   const decorated = useMemo(() => decorateVersionOptions(options), [options])
   const unsupportedGroup = decorated.find((option) => option.group)?.group
 
-  // The selected version must stay visible, so an unsupported selection
-  // (share link, remembered choice, keyboard cycling) keeps the group open.
-  const expanded = showUnsupported || version?.supported === false
+  // Landing on an unsupported version (share link, remembered choice,
+  // keyboard cycling) opens the group so the neighbours are in view. It can
+  // still be collapsed afterwards: RadioGroup keeps the selected row visible.
+  useEffect(() => {
+    if (version?.supported === false) setShowUnsupported(true)
+  }, [version])
   const collapsedGroups = useMemo(
-    () => (unsupportedGroup && !expanded ? [unsupportedGroup] : []),
-    [unsupportedGroup, expanded]
+    () => (unsupportedGroup && !showUnsupported ? [unsupportedGroup] : []),
+    [unsupportedGroup, showUnsupported]
   )
   const toggleUnsupported = useCallback(
-    () => setShowUnsupported(!expanded),
-    [expanded]
+    () => setShowUnsupported((shown) => !shown),
+    []
   )
 
   const handleVersionChange = (event) => {

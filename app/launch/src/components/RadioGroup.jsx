@@ -9,7 +9,8 @@ import { Icon } from '@mui/material'
  *  - `group`  heading text. A divider carrying it is drawn ahead of the first
  *             option in a run of consecutive options that share the group.
  *             With `onToggleGroup` the divider is a disclosure button, and the
- *             options of any group listed in `collapsedGroups` are left out.
+ *             options of any group listed in `collapsedGroups` are left out,
+ *             except the selected one, which always stays visible.
  *  - `hint`   secondary text shown after the option label.
  */
 const RadioGroup = ({
@@ -41,7 +42,7 @@ const RadioGroup = ({
         const previous = idx > 0 ? finalOpts[idx - 1] : undefined
         const startsGroup =
           Boolean(option.group) && option.group !== previous?.group
-        const collapsed = isCollapsed(option.group)
+        const hidden = isCollapsed(option.group) && option.value !== value
         return (
           <React.Fragment key={idx.toString()}>
             {startsGroup && onToggleGroup && (
@@ -49,11 +50,13 @@ const RadioGroup = ({
                 type="button"
                 className="radio-divider radio-divider-toggle"
                 tabIndex={tabIndex}
-                aria-expanded={!collapsed}
+                aria-expanded={!isCollapsed(option.group)}
                 onClick={() => onToggleGroup(option.group)}
               >
                 <Icon className="radio-divider-chevron" aria-hidden="true">
-                  {collapsed ? 'arrow_right' : 'arrow_drop_down'}
+                  {isCollapsed(option.group)
+                    ? 'arrow_right'
+                    : 'arrow_drop_down'}
                 </Icon>
                 <span className="radio-divider-text">{option.group}</span>
               </button>
@@ -67,7 +70,7 @@ const RadioGroup = ({
                 <span className="radio-divider-text">{option.group}</span>
               </div>
             )}
-            {!collapsed && (
+            {!hidden && (
               <div className="radio-row">
                 <label
                   key={`${idx}-${option.value}`}

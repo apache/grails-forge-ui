@@ -118,7 +118,7 @@ describe('MicronautVersion', () => {
     expect(selected.hint).toBeUndefined()
   })
 
-  it('keeps the disclosure open while an unsupported version is selected', async () => {
+  it('keeps a selected unsupported version visible after collapsing', async () => {
     render(<MicronautVersion />)
     await waitFor(() => expect(radio('7.2.4').checked).toBe(true))
     fireEvent.click(toggle())
@@ -126,8 +126,24 @@ describe('MicronautVersion', () => {
 
     fireEvent.click(toggle())
 
-    expect(toggle().getAttribute('aria-expanded')).toBe('true')
+    expect(toggle().getAttribute('aria-expanded')).toBe('false')
     expect(radio('7.0.17').checked).toBe(true)
+    expect(queryRadio('7.1.7')).toBeNull()
+  })
+
+  it('opens the disclosure when the selection moves to an unsupported version', async () => {
+    render(<MicronautVersion />)
+    await waitFor(() => expect(radio('7.2.4').checked).toBe(true))
+    expect(toggle().getAttribute('aria-expanded')).toBe('false')
+
+    // The keyboard shortcut selects through the store rather than a click
+    useAppStore.getState().setSelectedVersion(OPTIONS[3])
+
+    await waitFor(() =>
+      expect(toggle().getAttribute('aria-expanded')).toBe('true')
+    )
+    expect(radio('7.0.17')).toBeTruthy()
+    expect(radio('7.1.7').checked).toBe(true)
   })
 
   it('opens expanded when the requested version is unsupported', async () => {

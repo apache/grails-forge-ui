@@ -108,6 +108,23 @@ describe('RadioGroup', () => {
       ])
     })
 
+    it('keeps the selected option of a collapsed group visible', () => {
+      const { container } = renderGroup({
+        value: 'd',
+        collapsedGroups: ['Legacy'],
+        onToggleGroup: vi.fn(),
+      })
+
+      expect(screen.queryByRole('radio', { name: /Gamma/ })).toBeNull()
+      expect(screen.getByRole('radio', { name: 'Delta' }).checked).toBe(true)
+      expect(rowClasses(container)).toEqual([
+        'radio-row',
+        'radio-row',
+        'radio-divider radio-divider-toggle',
+        'radio-row',
+      ])
+    })
+
     it('keeps option ids stable so a collapsed group does not renumber the rest', () => {
       renderGroup({ collapsedGroups: ['Legacy'], onToggleGroup: vi.fn() })
 
