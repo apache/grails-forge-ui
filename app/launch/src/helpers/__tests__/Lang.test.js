@@ -4,9 +4,9 @@ import Lang from '../Lang'
 
 describe('Lang.trans', () => {
   it('returns the message text for a key without substitutions', () => {
-    expect(Lang.trans('versions.unsupportedGroup')).toBe('Unsupported versions')
+    expect(Lang.trans('versions.unsupportedGroup')).toBe('Unsupported Versions')
     // A second lookup is served from the cache and must return the same text
-    expect(Lang.trans('versions.unsupportedGroup')).toBe('Unsupported versions')
+    expect(Lang.trans('versions.unsupportedGroup')).toBe('Unsupported Versions')
   })
 
   it('interpolates substitutions', () => {

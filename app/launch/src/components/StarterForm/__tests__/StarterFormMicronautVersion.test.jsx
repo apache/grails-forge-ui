@@ -39,10 +39,10 @@ describe('decorateVersionOptions', () => {
     expect(release.hint).toBeUndefined()
     expect(next.group).toBeUndefined()
     expect(older).toMatchObject({
-      group: 'Unsupported versions',
+      group: 'Unsupported Versions',
       hint: 'Support ended 2026-10-31',
     })
-    expect(prev.group).toBe('Unsupported versions')
+    expect(prev.group).toBe('Unsupported Versions')
   })
 
   it('does not mutate the options it is given', () => {
@@ -68,7 +68,7 @@ describe('MicronautVersion', () => {
       'radio-row',
     ])
     expect(screen.getByRole('separator').textContent).toBe(
-      'Unsupported versions'
+      'Unsupported Versions'
     )
     expect(screen.getAllByText('Support ended 2026-10-31')).toHaveLength(2)
   })
