@@ -71,6 +71,15 @@ cd ./app/launch/
 npm run start:local
 ```
 
+### Simulating end of support dates
+
+Hosted Forge instances built before `endOfSupport` existed do not report it. To try the unsupported-version grouping locally, give the proxy server dates per feed channel; `null` strips the field from a channel that does report one:
+
+```
+cd ./dev-proxy-server
+FORGE_END_OF_SUPPORT="OLDER=2026-09-30,PREV=2026-10-28,NEXT=null" npm run start
+```
+
 ## Running a Grails Forge API locally to dev against
 
 If you want to run against a version of the starter api [Grails Starter Api](https://github.com/apache/grails-core/blob/-/grails-forge)
