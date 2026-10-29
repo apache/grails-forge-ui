@@ -261,7 +261,8 @@ export class MicronautStarterSDK {
     // The feed's `order` is the publishing channel order (RELEASE, SNAPSHOT,
     // NEXT...), which says nothing about how the versions themselves relate.
     // Sort by the Grails version each channel actually resolved to, then move
-    // release lines that are past their end of support below the rest.
+    // release lines that are past their end of support below the rest, most
+    // recently ended first.
     return orderBySupport(sortByVersion(loaded))
   }
 }

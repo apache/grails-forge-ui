@@ -7,8 +7,9 @@ import { useStarterVersionKeyboardEvents } from './useStarterFormKeyboardEvents'
 export const UNSUPPORTED_GROUP = 'unsupported'
 
 /**
- * Options arrive ordered supported first and unsupported last (see
- * MicronautStarterSDK.loadVersions). Put the unsupported run in a group so
+ * Options arrive ordered supported first, oldest to newest, then unsupported,
+ * most recently ended first (see MicronautStarterSDK.loadVersions). Put the
+ * unsupported run in a group so
  * RadioGroup draws a disclosure ahead of it, and say when support ended.
  * The store keeps the undecorated options.
  *

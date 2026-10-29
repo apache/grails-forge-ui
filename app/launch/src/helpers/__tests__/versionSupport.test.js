@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import {
+  compareEndOfSupport,
   isSupported,
   normalizeEndOfSupport,
   orderBySupport,
@@ -67,23 +68,42 @@ describe('isSupported', () => {
   })
 })
 
+describe('compareEndOfSupport', () => {
+  it('puts the most recently ended line first', () => {
+    const a = { version: '7.0.17', endOfSupport: '2026-09-30' }
+    const b = { version: '7.1.7', endOfSupport: '2026-10-31' }
+
+    expect([a, b].sort(compareEndOfSupport)).toEqual([b, a])
+  })
+
+  it('breaks a tie on the date by newest version first', () => {
+    const a = { version: '7.0.17', endOfSupport: '2026-10-31' }
+    const b = { version: '7.1.7', endOfSupport: '2026-10-31' }
+    const c = { version: '7.1.8-SNAPSHOT', endOfSupport: '2026-10-31' }
+
+    expect([a, c, b].sort(compareEndOfSupport)).toEqual([c, b, a])
+  })
+})
+
 describe('orderBySupport', () => {
   const options = [
-    { version: '7.0.17', supported: false },
-    { version: '7.1.7', supported: false },
-    { version: '7.2.4', supported: true },
+    { version: '6.2.3', supported: false, endOfSupport: '2025-12-31' },
+    { version: '7.0.17', supported: false, endOfSupport: '2026-10-31' },
+    { version: '7.1.7', supported: false, endOfSupport: '2026-10-31' },
+    { version: '7.2.4', supported: true, endOfSupport: '2026-12-31' },
     // No flag at all counts as supported
     { version: '8.0.0' },
-    { version: '9.0.0-SNAPSHOT', supported: true },
+    { version: '9.0.0-SNAPSHOT', supported: true, endOfSupport: '2027-12-31' },
   ]
 
-  it('moves unsupported options after the supported ones, keeping each run in order', () => {
+  it('keeps supported options first in their order, then unsupported most recently ended first', () => {
     expect(orderBySupport(options).map((o) => o.version)).toEqual([
       '7.2.4',
       '8.0.0',
       '9.0.0-SNAPSHOT',
-      '7.0.17',
       '7.1.7',
+      '7.0.17',
+      '6.2.3',
     ])
   })
 

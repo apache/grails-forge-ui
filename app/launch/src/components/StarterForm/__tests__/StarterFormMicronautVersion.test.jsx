@@ -19,12 +19,13 @@ const option = (key, version, host, endOfSupport, supported) => ({
   supported,
 })
 
-// Ordered the way loadVersions returns them: supported first, then unsupported
+// Ordered the way loadVersions returns them: supported first, oldest to
+// newest, then unsupported, most recently ended first
 const OPTIONS = [
   option('RELEASE', '7.2.4', 'latest.grails.org', '2026-12-31', true),
   option('NEXT', '8.0.0', 'next.grails.org', null, true),
-  option('OLDER', '7.0.17', 'older.grails.org', '2026-10-31', false),
   option('PREV', '7.1.7', 'prev.grails.org', '2026-10-31', false),
+  option('OLDER', '7.0.17', 'older.grails.org', '2026-09-30', false),
 ]
 
 const GROUP = 'Unsupported Versions (2)'
@@ -52,16 +53,19 @@ beforeEach(() => {
 
 describe('decorateVersionOptions', () => {
   it('groups unsupported versions and says when their support ended', () => {
-    const [release, next, older, prev] = decorateVersionOptions(OPTIONS)
+    const [release, next, prev, older] = decorateVersionOptions(OPTIONS)
 
     expect(release.group).toBeUndefined()
     expect(release.hint).toBeUndefined()
     expect(next.group).toBeUndefined()
-    expect(older).toMatchObject({
+    expect(prev).toMatchObject({
       group: UNSUPPORTED_GROUP,
       hint: 'ended 2026-10-31',
     })
-    expect(prev.group).toBe(UNSUPPORTED_GROUP)
+    expect(older).toMatchObject({
+      group: UNSUPPORTED_GROUP,
+      hint: 'ended 2026-09-30',
+    })
   })
 
   it('returns the options untouched when every version is supported', () => {
@@ -128,7 +132,8 @@ describe('MicronautVersion', () => {
 
     expect(toggle().getAttribute('aria-expanded')).toBe('true')
     expect(radio('7.0.17')).toBeTruthy()
-    expect(screen.getAllByText('ended 2026-10-31')).toHaveLength(2)
+    expect(screen.getByText('ended 2026-10-31')).toBeTruthy()
+    expect(screen.getByText('ended 2026-09-30')).toBeTruthy()
 
     fireEvent.click(toggle())
     expect(queryRadio('7.0.17')).toBeNull()
@@ -165,11 +170,11 @@ describe('MicronautVersion', () => {
   })
 
   it('stays expanded when the only unsupported version is the selected one', async () => {
-    seed([...OPTIONS.slice(0, 3)], { version: '7.0.17' })
+    seed([...OPTIONS.slice(0, 3)], { version: '7.1.7' })
 
     render(<MicronautVersion />)
 
-    await waitFor(() => expect(radio('7.0.17').checked).toBe(true))
+    await waitFor(() => expect(radio('7.1.7').checked).toBe(true))
     fireEvent.click(toggle())
     expect(toggle().getAttribute('aria-expanded')).toBe('true')
     expect(toggle().textContent).toContain('Unsupported Versions (1)')
@@ -186,8 +191,8 @@ describe('MicronautVersion', () => {
     await waitFor(() =>
       expect(toggle().getAttribute('aria-expanded')).toBe('true')
     )
-    expect(radio('7.0.17')).toBeTruthy()
-    expect(radio('7.1.7').checked).toBe(true)
+    expect(radio('7.1.7')).toBeTruthy()
+    expect(radio('7.0.17').checked).toBe(true)
   })
 
   it('opens expanded when the requested version is unsupported', async () => {

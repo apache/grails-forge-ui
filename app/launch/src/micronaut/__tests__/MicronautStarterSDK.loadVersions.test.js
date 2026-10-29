@@ -43,7 +43,7 @@ const END_OF_SUPPORT = {
   'https://next-snapshot.grails.org': null,
   'https://prev.grails.org': '2026-10-31',
   'https://prev-snapshot.grails.org': '2026-10-31',
-  'https://older.grails.org': '2026-10-31',
+  'https://older.grails.org': '2026-09-30',
 }
 
 const jsonResponse = (body) => ({
@@ -151,7 +151,7 @@ describe('MicronautStarterSDK.loadVersions', () => {
       supported: true,
     })
     expect(byKey.OLDER).toMatchObject({
-      endOfSupport: '2026-10-31',
+      endOfSupport: '2026-09-30',
       supported: false,
     })
     // Omitted by the instance
@@ -163,7 +163,7 @@ describe('MicronautStarterSDK.loadVersions', () => {
     })
   })
 
-  it('lists release lines past their end of support after the supported ones', async () => {
+  it('lists release lines past their end of support after the supported ones, most recently ended first', async () => {
     setToday(2026, 10, 15)
     vi.stubGlobal('fetch', mockFetch(GRAILS_VERSIONS, END_OF_SUPPORT))
 
@@ -175,15 +175,16 @@ describe('MicronautStarterSDK.loadVersions', () => {
       '7.2.4-SNAPSHOT',
       '8.0.0-M6',
       '8.0.0-SNAPSHOT',
-      // unsupported, oldest first
-      '7.0.6',
-      '7.1.6',
+      // unsupported: the 7.1 line ended 2026-10-31 (newest version first),
+      // the 7.0 line ended 2026-09-30
       '7.1.7-SNAPSHOT',
+      '7.1.6',
+      '7.0.6',
     ])
   })
 
   it('keeps a release line supported through its end of support day', async () => {
-    setToday(2026, 9, 31)
+    setToday(2026, 8, 30)
     vi.stubGlobal('fetch', mockFetch(GRAILS_VERSIONS, END_OF_SUPPORT))
 
     const loaded = await MicronautStarterSDK.loadVersions()

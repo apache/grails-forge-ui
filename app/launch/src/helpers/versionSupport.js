@@ -1,3 +1,5 @@
+import { compareVersions } from './versionCompare'
+
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 
 /**
@@ -47,11 +49,28 @@ export function isSupported(endOfSupport, today = todayIsoDate()) {
 }
 
 /**
- * Order version options so the supported ones come first and the unsupported
- * ones follow, keeping each run in its existing order. Options without a
- * `supported` flag are treated as supported. Returns a new array.
+ * Order unsupported options most recently ended first, so the line people
+ * are most likely still on sits at the top of the group. Lines that ended on
+ * the same day go newest version first.
  *
- * @param {Array<Object>} options  Objects carrying a `supported` boolean
+ * @param {Object} a
+ * @param {Object} b
+ * @return {Number}
+ */
+export function compareEndOfSupport(a, b) {
+  const left = normalizeEndOfSupport(a?.endOfSupport) ?? ''
+  const right = normalizeEndOfSupport(b?.endOfSupport) ?? ''
+  if (left !== right) return left > right ? -1 : 1
+  return compareVersions(b?.version, a?.version)
+}
+
+/**
+ * Order version options so the supported ones come first, keeping their
+ * existing order, and the unsupported ones follow, most recently ended first.
+ * Options without a `supported` flag are treated as supported. Returns a new
+ * array.
+ *
+ * @param {Array<Object>} options  Objects carrying `supported` and `endOfSupport`
  * @return {Array<Object>}
  */
 export function orderBySupport(options) {
@@ -64,5 +83,5 @@ export function orderBySupport(options) {
       supported.push(option)
     }
   }
-  return [...supported, ...unsupported]
+  return [...supported, ...unsupported.sort(compareEndOfSupport)]
 }
