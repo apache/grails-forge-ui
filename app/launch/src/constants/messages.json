@@ -15,5 +15,10 @@
         "preview": "or to the preview",
         "diff": "or view a diff from a baseline application",
         "zip": "You can also directly download a zip"
+    },
+    "versions": {
+        "unsupportedGroup": "Unsupported Versions ({{count}})",
+        "unsupportedGroupMore": "Unsupported Versions ({{count}} more)",
+        "supportEnded": "ended {{date}}"
     }
 }

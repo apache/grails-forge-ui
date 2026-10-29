@@ -1,9 +1,9 @@
 // StarterForm.js
-import React from "react";
+import React from 'react'
 import Grid from '@mui/material/Grid'
 
 import StarterFormApplicationType from './StarterFormApplicationType'
-import StarterFormGorm from "./StarterFormGorm";
+import StarterFormGorm from './StarterFormGorm'
 import StarterFormJavaVersion from './StarterFormJavaVersion'
 import StarterFormMicronautVersion from './StarterFormMicronautVersion'
 import StarterFormName from './StarterFormName'
@@ -14,7 +14,7 @@ import StarterFormServlet from './StarterFormServlet'
 const StarterForm = ({ _onError }) => {
   return (
     <div className="mn-starter-form-main">
-      <Grid container spacing={1} alignItems="flex-end">
+      <Grid container spacing={1} sx={{ alignItems: 'flex-end' }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StarterFormApplicationType />
         </Grid>
@@ -28,7 +28,12 @@ const StarterForm = ({ _onError }) => {
           <StarterFormPackage />
         </Grid>
       </Grid>
-      <Grid container spacing={1} alignItems="flex-start" className="mn-radio-row">
+      <Grid
+        container
+        spacing={1}
+        sx={{ alignItems: 'flex-start' }}
+        className="mn-radio-row"
+      >
         <Grid size={{ xs: 12, sm: 3 }} className="mn-radio">
           <StarterFormMicronautVersion />
         </Grid>

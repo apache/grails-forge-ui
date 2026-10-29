@@ -71,6 +71,15 @@ cd ./app/launch/
 npm run start:local
 ```
 
+### Simulating end of support dates
+
+Hosted Forge instances built before `endOfSupport` existed do not report it. To try the unsupported-version grouping locally, give the proxy server dates per feed channel; `null` strips the field from a channel that does report one:
+
+```
+cd ./dev-proxy-server
+FORGE_END_OF_SUPPORT="OLDER=2026-09-30,PREV=2026-10-28,NEXT=null" npm run start
+```
+
 ## Running a Grails Forge API locally to dev against
 
 If you want to run against a version of the starter api [Grails Starter Api](https://github.com/apache/grails-core/blob/-/grails-forge)
@@ -144,6 +153,14 @@ You can find the version feed file at [./app/launch/public/grails-version-feed.j
       ...
   },
   ```
+## Supported and unsupported versions
+
+![Grails Version list with supported lines and a collapsed Unsupported Versions disclosure](docs/images/unsupported-versions.png)
+
+Each channel in the feed points at a Grails Forge instance, and the UI reads that instance's `/versions` endpoint to learn which Grails version it serves. Forge instances built from grails-core 7.0.18, 7.1.8, 7.2.5, 8.0.1 and later also report `endOfSupport`, the last day (ISO `yyyy-MM-dd`) that release line is supported. The date comes from `grailsEndOfSupport` in that branch's `gradle.properties`.
+
+The version list shows supported release lines first, oldest to newest. Lines whose `endOfSupport` has passed follow under an "Unsupported Versions (n)" disclosure, collapsed by default. Expanding it lists every unsupported line, most recently ended first, with the date support ended, and they all stay selectable. The disclosure opens on its own when the selection lands on an unsupported version, for example from a share link or the keyboard shortcut. It can be collapsed again with an unsupported version selected: that row stays visible and the heading counts what is hidden, for example "(1 more)". A line stays supported through its `endOfSupport` day, and a missing, null or malformed date is treated as "unknown" and shown with the supported versions, which is also what happens for instances that predate the field.
+
 ## Running the React app without changing grails-version-feed.json
 In dev-proxy-server/ there is a run.command file that will expose the proxies of the grails version feed on port 8088.
 When starting the React app under app/launch use the command:

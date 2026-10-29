@@ -18,7 +18,7 @@ class LangApi {
   _exec(str, sub = {}) {
     const message = _.get(messages, str, str)
     // If there are no opts passed in we can skip interpolation
-    if (_.isEmpty(sub)) return this._cache(message, sub)
+    if (_.isEmpty(sub)) return this._cache(str, message)
 
     var compiled = _.template(message, { interpolate: /{{([\s\S]+?)}}/g })
     return compiled(sub)

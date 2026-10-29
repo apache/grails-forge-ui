@@ -60,7 +60,7 @@ const GenerateButtons = ({
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleClose}
-        PaperProps={{ className: theme }}
+        slotProps={{ paper: { className: theme } }}
       >
         <TooltipWrapper tooltip={messages.tooltips.generate}>
           <MenuItem onClick={handleDownload}>

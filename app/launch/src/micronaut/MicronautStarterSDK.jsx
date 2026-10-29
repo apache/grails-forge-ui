@@ -1,5 +1,10 @@
 import { CacheApi, SessionStorageAdapter } from '../helpers/Cache'
 import { sortByVersion } from '../helpers/versionCompare'
+import {
+  isSupported,
+  normalizeEndOfSupport,
+  orderBySupport,
+} from '../helpers/versionSupport'
 import { VERSION_FEED_URL } from './constants'
 import { CreateCommand } from './CreateCommand'
 import {FeatureCommand} from "./FeatureCommand";
@@ -225,6 +230,10 @@ export class MicronautStarterSDK {
     const mn = new this({ baseUrl })
     const result = await mn.versions()
     const version = result.versions['grails.version']
+    // Forge reports the last supported day of its release line as a top-level
+    // `endOfSupport` ISO date on /versions, and omits it when the date is
+    // unknown. Instances built before the field existed never send it.
+    const endOfSupport = normalizeEndOfSupport(result.endOfSupport)
     return {
       key: key,
       label: version,
@@ -232,6 +241,8 @@ export class MicronautStarterSDK {
       value: baseUrl,
       api: baseUrl,
       order,
+      endOfSupport,
+      supported: isSupported(endOfSupport),
     }
   }
 
@@ -249,7 +260,9 @@ export class MicronautStarterSDK {
 
     // The feed's `order` is the publishing channel order (RELEASE, SNAPSHOT,
     // NEXT...), which says nothing about how the versions themselves relate.
-    // Sort by the Grails version each channel actually resolved to.
-    return sortByVersion(loaded)
+    // Sort by the Grails version each channel actually resolved to, then move
+    // release lines that are past their end of support below the rest, most
+    // recently ended first.
+    return orderBySupport(sortByVersion(loaded))
   }
 }
