@@ -38,7 +38,7 @@ export default function OtherCommands({ theme, trigger }) {
         maxWidth="md"
         fullWidth
         className={`${theme} next-steps other-configuration`}
-        PaperProps={{ className: `${theme}` }}
+        slotProps={{ paper: { className: `${theme}` } }}
       >
         <DialogTitle>Other ways to build this configuration.</DialogTitle>
         <DialogContent>

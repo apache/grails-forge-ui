@@ -72,7 +72,7 @@ const ShareModal = ({ theme, trigger, onClose }, _ref) => {
         maxWidth="md"
         fullWidth
         className={`${theme} next-steps share`}
-        PaperProps={{ className: `${theme}` }}
+        slotProps={{ paper: { className: `${theme}` } }}
       >
         <DialogTitle>{messages.share.header}</DialogTitle>
         <DialogContent>

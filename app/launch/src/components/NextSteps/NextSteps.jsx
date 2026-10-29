@@ -58,7 +58,7 @@ const NextSteps = ({ info, theme = 'light', onClose, onStartOver }) => {
       maxWidth="md"
       fullWidth
       className={`${theme} next-steps`}
-      PaperProps={{ className: `${theme}` }}
+      slotProps={{ paper: { className: `${theme}` } }}
     >
       <DialogTitle>Your Grails app is ready for takeoff.</DialogTitle>
       <DialogContent>
