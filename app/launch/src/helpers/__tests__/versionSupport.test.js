@@ -13,14 +13,25 @@ afterEach(() => {
 })
 
 describe('todayIsoDate', () => {
-  it('formats the local calendar date as yyyy-MM-dd', () => {
-    expect(todayIsoDate(new Date(2026, 9, 29, 23, 59))).toBe('2026-10-29')
-    expect(todayIsoDate(new Date(2026, 0, 5))).toBe('2026-01-05')
+  it('formats the UTC calendar date as yyyy-MM-dd', () => {
+    expect(todayIsoDate(new Date('2026-10-29T23:59:00Z'))).toBe('2026-10-29')
+    expect(todayIsoDate(new Date('2026-01-05T00:00:00Z'))).toBe('2026-01-05')
+  })
+
+  it('reads the date in UTC rather than the local calendar', () => {
+    // Still the evening of the 31st in Honolulu, already the 1st in UTC
+    expect(todayIsoDate(new Date('2026-10-31T20:00:00-10:00'))).toBe(
+      '2026-11-01'
+    )
+    // Already the 1st in Auckland, still the 31st in UTC
+    expect(todayIsoDate(new Date('2026-11-01T09:00:00+13:00'))).toBe(
+      '2026-10-31'
+    )
   })
 
   it('defaults to the current date', () => {
     vi.useFakeTimers({ toFake: ['Date'] })
-    vi.setSystemTime(new Date(2026, 9, 29, 12))
+    vi.setSystemTime(new Date('2026-10-29T12:00:00Z'))
 
     expect(todayIsoDate()).toBe('2026-10-29')
   })
@@ -61,7 +72,7 @@ describe('isSupported', () => {
 
   it('uses the current date by default', () => {
     vi.useFakeTimers({ toFake: ['Date'] })
-    vi.setSystemTime(new Date(2026, 10, 1))
+    vi.setSystemTime(new Date('2026-11-01T00:00:00Z'))
 
     expect(isSupported('2026-10-31')).toBe(false)
     expect(isSupported('2026-11-01')).toBe(true)

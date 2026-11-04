@@ -3,18 +3,17 @@ import { compareVersions } from './versionCompare'
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 
 /**
- * Today's date in the visitor's local calendar as ISO yyyy-MM-dd. This is the
- * same shape Forge uses for `endOfSupport`, so the two compare as plain
+ * Today's date as ISO yyyy-MM-dd in UTC. Forge reports `endOfSupport` as a
+ * plain ISO date with no time zone, so it is read as a UTC date: every
+ * visitor then sees a line end at the same moment rather than up to a day
+ * apart depending on their local calendar, and the two compare as plain
  * strings without any time zone arithmetic.
  *
  * @param {Date} now
  * @return {String}
  */
 export function todayIsoDate(now = new Date()) {
-  const year = now.getFullYear()
-  const month = String(now.getMonth() + 1).padStart(2, '0')
-  const day = String(now.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
+  return now.toISOString().slice(0, 10)
 }
 
 /**
@@ -40,7 +39,7 @@ export function normalizeEndOfSupport(endOfSupport) {
  * than wrongly bury one below the divider.
  *
  * @param {*} endOfSupport  As reported by Forge
- * @param {String} today    ISO yyyy-MM-dd, defaults to the current local date
+ * @param {String} today    ISO yyyy-MM-dd, defaults to the current UTC date
  * @return {Boolean}
  */
 export function isSupported(endOfSupport, today = todayIsoDate()) {
