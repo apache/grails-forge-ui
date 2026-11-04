@@ -114,9 +114,9 @@ describe('MicronautVersion', () => {
     expect(toggle().textContent).toContain(GROUP)
     expect(queryRadio('7.0.17')).toBeNull()
     expect(queryRadio('7.1.7')).toBeNull()
-    const rows = [...container.querySelectorAll('.radio-group > *')]
-      .filter((el) => el.tagName !== 'LABEL')
-      .map((el) => el.className)
+    const rows = [
+      ...container.querySelectorAll('.radio-divider, .radio-row'),
+    ].map((el) => el.className)
     expect(rows).toEqual([
       'radio-row',
       'radio-row',

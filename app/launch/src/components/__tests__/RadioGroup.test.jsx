@@ -24,10 +24,11 @@ const renderGroup = (props = {}) =>
     />
   )
 
+// Dividers and rows in document order, whichever section they sit in
 const rowClasses = (container) =>
-  [...container.querySelectorAll('.radio-group > *')]
-    .filter((el) => el.tagName !== 'LABEL')
-    .map((el) => el.className)
+  [...container.querySelectorAll('.radio-divider, .radio-row')].map(
+    (el) => el.className
+  )
 
 describe('RadioGroup', () => {
   it('renders no divider when options carry no group', () => {
@@ -96,6 +97,30 @@ describe('RadioGroup', () => {
 
       fireEvent.click(toggle)
       expect(onToggleGroup).toHaveBeenCalledWith('Legacy')
+    })
+
+    it('points the disclosure button at the section holding the group rows', () => {
+      const { container } = renderGroup({
+        value: 'd',
+        collapsedGroups: ['Legacy'],
+        onToggleGroup: vi.fn(),
+      })
+
+      const toggle = screen.getByRole('button', { name: 'Legacy' })
+      const section = container.querySelector(
+        `#${toggle.getAttribute('aria-controls')}`
+      )
+      expect(section.className).toBe('radio-group-section')
+      // Only the selected row is left in it while collapsed
+      expect(
+        [...section.querySelectorAll('input')].map((i) => i.value)
+      ).toEqual(['d'])
+      // And nothing outside the section belongs to the group
+      expect(
+        [...container.querySelectorAll('.radio-group > .radio-row input')].map(
+          (i) => i.value
+        )
+      ).toEqual(['a', 'b'])
     })
 
     it('lists the options of an expanded group under the disclosure button', () => {
