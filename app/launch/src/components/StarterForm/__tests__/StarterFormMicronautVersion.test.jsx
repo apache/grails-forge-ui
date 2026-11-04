@@ -1,5 +1,6 @@
 import React from 'react'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import _ from 'lodash'
 import { beforeEach, describe, expect, it } from 'vitest'
 
 import { useAppStore } from '../../../state/store'
@@ -38,12 +39,13 @@ const seed = (options = OPTIONS, initialValues = {}) => {
 
 const toggle = () =>
   screen.getByRole('button', { name: /Unsupported Versions/ })
-const radio = (version) =>
-  screen.getByRole('radio', { name: new RegExp(version.replace('.', '\\.')) })
+// Match the version at the start of a radio's accessible name, which runs on
+// into the "ended ..." hint of an unsupported version, without matching a
+// longer version such as 7.1.7-SNAPSHOT or 7.1.70
+const named = (version) => new RegExp(`^${_.escapeRegExp(version)}(?![\\d.-])`)
+const radio = (version) => screen.getByRole('radio', { name: named(version) })
 const queryRadio = (version) =>
-  screen.queryByRole('radio', {
-    name: new RegExp(version.replace('.', '\\.')),
-  })
+  screen.queryByRole('radio', { name: named(version) })
 
 beforeEach(() => {
   useAppStore.setState(useAppStore.getInitialState())
@@ -165,6 +167,22 @@ describe('MicronautVersion', () => {
 
     expect(toggle().getAttribute('aria-expanded')).toBe('false')
     expect(toggle().textContent).toContain(GROUP_ONE_MORE)
+    expect(radio('7.0.17').checked).toBe(true)
+    expect(queryRadio('7.1.7')).toBeNull()
+  })
+
+  it('leaves a collapsed disclosure alone when the same version is set again', async () => {
+    render(<MicronautVersion />)
+    await waitFor(() => expect(radio('7.2.4').checked).toBe(true))
+    fireEvent.click(toggle())
+    fireEvent.click(radio('7.0.17'))
+    fireEvent.click(toggle())
+    expect(toggle().getAttribute('aria-expanded')).toBe('false')
+
+    // A store update may carry a fresh object for the version already chosen
+    act(() => useAppStore.getState().setSelectedVersion({ ...OPTIONS[3] }))
+
+    expect(toggle().getAttribute('aria-expanded')).toBe('false')
     expect(radio('7.0.17').checked).toBe(true)
     expect(queryRadio('7.1.7')).toBeNull()
   })

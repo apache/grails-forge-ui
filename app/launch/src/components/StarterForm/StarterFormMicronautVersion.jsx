@@ -53,10 +53,14 @@ export default function MicronautVersion() {
 
   // Landing on an unsupported version (share link, remembered choice,
   // keyboard cycling) opens the group so the neighbours are in view. It can
-  // still be collapsed afterwards: RadioGroup keeps the selected row visible.
+  // still be collapsed afterwards: RadioGroup keeps the selected row visible,
+  // and the effect is keyed on the version rather than the option object so
+  // a store update carrying the same version leaves it collapsed.
+  const selectedValue = version?.value
+  const selectedUnsupported = version?.supported === false
   useEffect(() => {
-    if (version?.supported === false) setShowUnsupported(true)
-  }, [version])
+    if (selectedUnsupported) setShowUnsupported(true)
+  }, [selectedValue, selectedUnsupported])
   const collapsedGroups = useMemo(
     () => (showUnsupported ? [] : [UNSUPPORTED_GROUP]),
     [showUnsupported]
