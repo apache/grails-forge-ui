@@ -70,9 +70,11 @@ const Diff = ({ theme = 'light', disabled, onLoad, onClose }, ref) => {
         maxWidth={false}
         fullWidth
         className={`diff ${theme}`}
-        PaperProps={{
-          className: `diff ${theme}`,
-          style: { width: '95vw', height: '90vh', maxWidth: '95vw' },
+        slotProps={{
+          paper: {
+            className: `diff ${theme}`,
+            style: { width: '95vw', height: '90vh', maxWidth: '95vw' },
+          },
         }}
       >
         <DialogTitle style={{ paddingBottom: 0, fontSize: '24px' }}>

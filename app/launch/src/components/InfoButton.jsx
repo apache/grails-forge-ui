@@ -41,7 +41,7 @@ const InfoButton = ({ className = '', theme, style }) => {
         maxWidth="md"
         fullWidth
         className={`${theme} info-modal`}
-        PaperProps={{ className: `${theme}` }}
+        slotProps={{ paper: { className: `${theme}` } }}
       >
         <DialogTitle>{"What's this?"}</DialogTitle>
         <DialogContent>

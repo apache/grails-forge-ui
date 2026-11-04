@@ -165,9 +165,11 @@ export const FeatureSelectorModal = ({ theme = 'light' }) => {
         maxWidth="lg"
         fullWidth
         className={`mn-feature-modal ${theme}`}
-        PaperProps={{
-          className: `mn-feature-modal ${theme}`,
-          style: { maxHeight: '90vh', height: '90vh' },
+        slotProps={{
+          paper: {
+            className: `mn-feature-modal ${theme}`,
+            style: { maxHeight: '90vh', height: '90vh' },
+          },
         }}
         onKeyDown={handleKeyDown}
       >

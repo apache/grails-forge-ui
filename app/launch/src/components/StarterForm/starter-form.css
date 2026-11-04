@@ -79,3 +79,53 @@ body.dark .mn-starter-form-main .mn-radio .radio-label {
     margin-top: 0;
   }
 }
+
+/* Version support grouping: a disclosure ahead of unsupported release lines,
+   styled like the field label above the list, and the end of support date
+   after each of them in the same muted tone */
+.mn-starter-form-main .mn-radio .radio-divider {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 6px 0 -4px;
+  padding: 6px 0 0;
+  border: 0;
+  border-top: 1px solid rgba(158, 158, 158, 0.45);
+  background: none;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.mn-starter-form-main .mn-radio .radio-divider-toggle {
+  cursor: pointer;
+}
+
+.mn-starter-form-main .mn-radio .radio-divider-toggle:focus-visible {
+  outline: 2px solid var(--theme-light-secondary);
+  outline-offset: 2px;
+}
+
+.mn-starter-form-main .mn-radio .radio-divider-chevron {
+  margin-left: -6px;
+  margin-right: 2px;
+  font-size: 20px;
+}
+
+.mn-starter-form-main .mn-radio .radio-hint {
+  padding-left: 10px;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+body.light .mn-starter-form-main .mn-radio .radio-divider,
+body.light .mn-starter-form-main .mn-radio .radio-hint {
+  color: var(--label-darkgrey);
+}
+
+body.dark .mn-starter-form-main .mn-radio .radio-divider,
+body.dark .mn-starter-form-main .mn-radio .radio-hint {
+  color: var(--label-grey);
+}

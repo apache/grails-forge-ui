@@ -40,13 +40,15 @@ const FeatureAvailable = ({ feature, toggleFeatures }) => {
                 stateSuffix
               }
               subheader={feature.description}
-              titleTypographyProps={{
-                variant: 'subtitle1',
-                style: { fontSize: '24px', fontWeight: 300, lineHeight: '32px' },
-              }}
-              subheaderTypographyProps={{
-                variant: 'body2',
-                className: 'grey-text',
+              slotProps={{
+                title: {
+                  variant: 'subtitle1',
+                  style: { fontSize: '24px', fontWeight: 300, lineHeight: '32px' },
+                },
+                subheader: {
+                  variant: 'body2',
+                  className: 'grey-text',
+                },
               }}
             />
             {feature.selected && (
