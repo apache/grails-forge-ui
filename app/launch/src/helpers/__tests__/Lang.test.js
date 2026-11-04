@@ -22,6 +22,22 @@ describe('Lang.trans', () => {
     )
   })
 
+  it('still interpolates after the key was used without substitutions', () => {
+    expect(Lang.trans('versions.unsupportedGroupMore')).toBe(
+      'Unsupported Versions ({{count}} more)'
+    )
+    expect(Lang.trans('versions.unsupportedGroupMore', { count: 1 })).toBe(
+      'Unsupported Versions (1 more)'
+    )
+    // And the other way round: the cache holds the template, not a result
+    expect(Lang.trans('versions.unsupportedGroupMore', { count: 3 })).toBe(
+      'Unsupported Versions (3 more)'
+    )
+    expect(Lang.trans('versions.unsupportedGroupMore')).toBe(
+      'Unsupported Versions ({{count}} more)'
+    )
+  })
+
   it('falls back to the key itself when the message is unknown', () => {
     expect(Lang.trans('nope.missing')).toBe('nope.missing')
   })
