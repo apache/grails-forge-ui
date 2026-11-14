@@ -1,6 +1,6 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { CreateCommand } from '../../../micronaut/CreateCommand'
 import RunCommand from '../RunCommand'
@@ -16,9 +16,15 @@ const createCommand = new CreateCommand(
   'https://latest.grails.org'
 )
 
+let current = createCommand
+
 vi.mock('../../../state/store', () => ({
-  useCreateCommand: () => createCommand,
+  useCreateCommand: () => current,
 }))
+
+afterEach(() => {
+  current = createCommand
+})
 
 describe('RunCommand', () => {
   it('renders nothing while closed', () => {
@@ -47,6 +53,20 @@ describe('RunCommand', () => {
         .getByRole('button', { name: 'Windows' })
         .getAttribute('aria-pressed')
     ).toBe('true')
+  })
+
+  it('offers nothing to copy for a name a shared link could not have come from Forge with', () => {
+    current = new CreateCommand(
+      { ...createCommand, package: 'com.example', name: "demo';touch pwned;'" },
+      'https://latest.grails.org'
+    )
+    render(<RunCommand open onClose={vi.fn()} />)
+
+    expect(document.querySelector('.copy-to-clipboard')).toBeNull()
+    expect(screen.queryByText(/touch pwned/)).toBeNull()
+    expect(
+      screen.getByText(/Use a name that starts with a letter/)
+    ).toBeTruthy()
   })
 
   it('closes from its Close button', () => {

@@ -16,7 +16,7 @@ export default function RunCommand({ open, onClose, theme }) {
   const createCommand = useCreateCommand()
   const [os, setOs] = useState(() => guessOs() || OS_NIX)
 
-  const command = createCommand ? createCommand.toRunCommand(os) : ''
+  const command = createCommand ? createCommand.toRunCommand(os) : null
   const name = createCommand ? createCommand.name : ''
   const jdk = createCommand?.javaVersion?.replace('JDK_', '')
 
@@ -49,19 +49,29 @@ export default function RunCommand({ open, onClose, theme }) {
         </div>
 
         <div className="next-steps-wrapper">
-          <Grid container className="next-steps-row multi-line">
-            <Grid className="text">
-              <code>{command}</code>
-            </Grid>
-            <Grid className="icon">
-              <CopyToClipboard value={command} />
-            </Grid>
-          </Grid>
-          <p className="run-command-note">
-            {os === OS_WINDOWS && 'Paste it into PowerShell. '}
-            It downloads the project into <code>{name}</code> and starts it
-            {jdk ? `, which needs JDK ${jdk} or newer` : ''}.
-          </p>
+          {command ? (
+            <>
+              <Grid container className="next-steps-row multi-line">
+                <Grid className="text">
+                  <code>{command}</code>
+                </Grid>
+                <Grid className="icon">
+                  <CopyToClipboard value={command} />
+                </Grid>
+              </Grid>
+              <p className="run-command-note">
+                {os === OS_WINDOWS && 'Paste it into PowerShell. '}
+                It downloads the project into <code>{name}</code> and starts it
+                {jdk ? `, which needs JDK ${jdk} or newer` : ''}.
+              </p>
+            </>
+          ) : (
+            <p className="run-command-note">
+              Use a name that starts with a letter and has only letters, digits,
+              - and _, and a package of Java identifiers, to get a command for
+              this project.
+            </p>
+          )}
         </div>
       </DialogContent>
       <DialogActions>
