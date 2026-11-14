@@ -14,6 +14,7 @@ import { GENERATE_SHORTCUT } from '../../constants/shortcuts'
 import useKeyboardShortcuts from '../../hooks/useKeyboardShortcuts'
 import { useStarterForm } from '../../state/store'
 import OtherCommands from '../OtherCommands'
+import RunCommand from '../RunCommand'
 import { TooltipWrapper } from '../TooltipButton'
 
 const GenerateButtons = ({
@@ -33,6 +34,13 @@ const GenerateButtons = ({
 
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  // The dialog lives outside the menu: closing the menu unmounts its items
+  const [runCommandOpen, setRunCommandOpen] = useState(false)
+  const handleRunCommand = () => {
+    handleClose()
+    setRunCommandOpen(true)
   }
 
   const handleDownload = (e) => {
@@ -71,6 +79,13 @@ const GenerateButtons = ({
           </MenuItem>
         </TooltipWrapper>
 
+        <MenuItem onClick={handleRunCommand}>
+          <ListItemIcon>
+            <Icon>terminal</Icon>
+          </ListItemIcon>
+          <ListItemText primary="Run from Terminal" />
+        </MenuItem>
+
         <OtherCommands
           baseUrl={baseUrl}
           createPayload={createPayload}
@@ -85,6 +100,11 @@ const GenerateButtons = ({
           }
         />
       </Menu>
+      <RunCommand
+        open={runCommandOpen}
+        onClose={() => setRunCommandOpen(false)}
+        theme={theme}
+      />
     </>
   )
 }
