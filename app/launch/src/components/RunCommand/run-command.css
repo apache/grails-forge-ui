@@ -1,0 +1,30 @@
+.run-command .next-steps-row {
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  padding: 10px 6px 10px 12px;
+}
+
+.run-command .next-steps-row .text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.run-command .next-steps-row .text code {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  word-break: break-all;
+  background: none;
+  padding: 0;
+}
+
+.run-command .next-steps-row .icon {
+  flex: 0 0 auto;
+  height: auto;
+  padding-left: 8px;
+}
+
+.run-command p.run-command-note {
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.75;
+}

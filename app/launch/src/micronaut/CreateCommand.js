@@ -1,5 +1,6 @@
 import ToCli from './creators/ToCli'
 import ToCurl from './creators/ToCurl'
+import ToRunCommand from './creators/ToRunCommand'
 import ToUrl from './creators/ToUrl'
 
 export class CreateCommand {
@@ -32,5 +33,9 @@ export class CreateCommand {
 
   toCurl() {
     return ToCurl.make(this)
+  }
+
+  toRunCommand(os) {
+    return ToRunCommand.make(this, os)
   }
 }
